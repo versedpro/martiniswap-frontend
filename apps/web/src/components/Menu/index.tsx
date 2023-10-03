@@ -1,16 +1,17 @@
-import { languageList, useTranslation } from '@pancakeswap/localization'
+import { useTranslation } from '@pancakeswap/localization'
+// import { languageList, useTranslation } from '@pancakeswap/localization'
 import { footerLinks, Menu as UikitMenu, NextLinkFromReactRouter, useModal } from '@pancakeswap/uikit'
 import USCitizenConfirmModal from 'components/Modal/USCitizenConfirmModal'
 import { NetworkSwitcher } from 'components/NetworkSwitcher'
-import PhishingWarningBanner from 'components/PhishingWarningBanner'
-import { useCakePrice } from 'hooks/useCakePrice'
+// import PhishingWarningBanner from 'components/PhishingWarningBanner'
+// import { useCakePrice } from 'hooks/useCakePrice'
 import useTheme from 'hooks/useTheme'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useActiveChainId } from 'hooks/useActiveChainId'
-import { usePhishingBanner } from '@pancakeswap/utils/user'
+// import { usePhishingBanner } from '@pancakeswap/utils/user'
 import { IdType } from 'hooks/useUserIsUsCitizenAcknowledgement'
-import { BIG_ZERO } from '@pancakeswap/utils/bigNumber'
+// import { BIG_ZERO } from '@pancakeswap/utils/bigNumber'
 import GlobalSettings from './GlobalSettings'
 import { SettingsMode } from './GlobalSettings/types'
 import { useMenuItems } from './hooks/useMenuItems'
@@ -24,8 +25,9 @@ const LinkComponent = (linkProps) => {
 const Menu = (props) => {
   const { chainId } = useActiveChainId()
   const { isDark, setTheme } = useTheme()
-  const cakePrice = useCakePrice()
-  const { currentLanguage, setLanguage, t } = useTranslation()
+  // const cakePrice = useCakePrice()
+  const { t } = useTranslation()
+  // const { currentLanguage, setLanguage, t } = useTranslation()
   const { pathname } = useRouter()
   const [onUSCitizenModalPresent] = useModal(
     <USCitizenConfirmModal title={t('PancakeSwap Perpetuals')} id={IdType.PERPETUALS} />,
@@ -33,7 +35,7 @@ const Menu = (props) => {
     false,
     'usCitizenConfirmModal',
   )
-  const [showPhishingWarningBanner] = usePhishingBanner()
+  // const [showPhishingWarningBanner] = usePhishingBanner()
 
   const menuItems = useMenuItems(onUSCitizenModalPresent)
 
@@ -60,15 +62,15 @@ const Menu = (props) => {
           </>
         }
         chainId={chainId}
-        banner={showPhishingWarningBanner && typeof window !== 'undefined' && <PhishingWarningBanner />}
+        // banner={showPhishingWarningBanner && typeof window !== 'undefined' && <PhishingWarningBanner />}
         isDark={isDark}
         toggleTheme={toggleTheme}
-        currentLang={currentLanguage.code}
-        langs={languageList}
-        setLang={setLanguage}
-        cakePriceUsd={cakePrice.eq(BIG_ZERO) ? undefined : cakePrice}
+        // currentLang={currentLanguage.code}
+        // langs={languageList}
+        // setLang={setLanguage}
+        // cakePriceUsd={cakePrice.eq(BIG_ZERO) ? undefined : cakePrice}
         links={menuItems}
-        subLinks={activeMenuItem?.hideSubNav || activeSubMenuItem?.hideSubNav ? [] : activeMenuItem?.items}
+        // subLinks={activeMenuItem?.hideSubNav || activeSubMenuItem?.hideSubNav ? [] : activeMenuItem?.items}
         footerLinks={getFooterLinks}
         activeItem={activeMenuItem?.href}
         activeSubItem={activeSubMenuItem?.href}

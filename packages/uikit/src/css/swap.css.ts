@@ -108,10 +108,10 @@ export const pageVariants = recipe({
       flexDirection: "column",
       alignItems: "center",
       width: "100%",
-      height: "100%",
+      height: "extra",
       background: "gradientBubblegum",
       padding: "16px",
-      paddingBottom: "0px",
+      // paddingBottom: "0px",
     }),
     style({
       backgroundSize: "auto",

@@ -2,17 +2,17 @@ import { useIsMounted } from "@pancakeswap/hooks";
 import throttle from "lodash/throttle";
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { styled } from "styled-components";
-import BottomNav from "../../components/BottomNav";
+// import BottomNav from "../../components/BottomNav";
 import { Box } from "../../components/Box";
 import Flex from "../../components/Box/Flex";
 import { AtomBox } from "../../components/AtomBox";
-import CakePrice from "../../components/CakePrice/CakePrice";
-import Footer from "../../components/Footer";
-import LangSelector from "../../components/LangSelector/LangSelector";
+// import CakePrice from "../../components/CakePrice/CakePrice";
+// import Footer from "../../components/Footer";
+// import LangSelector from "../../components/LangSelector/LangSelector";
 import MenuItems from "../../components/MenuItems/MenuItems";
-import { SubMenuItems } from "../../components/SubMenuItems";
+// import { SubMenuItems } from "../../components/SubMenuItems";
 import { useMatchBreakpoints } from "../../contexts";
-import Logo from "./components/Logo";
+// import Logo from "./components/Logo";
 import { MENU_HEIGHT, MOBILE_MENU_HEIGHT, TOP_BANNER_HEIGHT, TOP_BANNER_HEIGHT_MOBILE } from "./config";
 import { MenuContext } from "./context";
 import { NavProps } from "./types";
@@ -129,10 +129,10 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
   }, [totalTopMenuHeight]);
 
   // Find the home link if provided
-  const homeLink = links.find((link) => link.label === "Home");
+  // const homeLink = links.find((link) => link.label === "Home");
 
-  const subLinksWithoutMobile = useMemo(() => subLinks?.filter((subLink) => !subLink.isMobileOnly), [subLinks]);
-  const subLinksMobileOnly = useMemo(() => subLinks?.filter((subLink) => subLink.isMobileOnly), [subLinks]);
+  // const subLinksWithoutMobile = useMemo(() => subLinks?.filter((subLink) => !subLink.isMobileOnly), [subLinks]);
+  // const subLinksMobileOnly = useMemo(() => subLinks?.filter((subLink) => subLink.isMobileOnly), [subLinks]);
   const providerValue = useMemo(() => ({ linkComponent }), [linkComponent]);
   return (
     <MenuContext.Provider value={providerValue}>
@@ -148,13 +148,13 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
             {banner && isMounted && <TopBannerContainer height={topBannerHeight}>{banner}</TopBannerContainer>}
             <StyledNav>
               <Flex>
-                <Logo href={homeLink?.href ?? "/"} />
+                {/* <Logo href={homeLink?.href ?? "/"} /> */}
                 <AtomBox display={{ xs: "none", md: "block" }}>
                   <MenuItems items={links} activeItem={activeItem} activeSubItem={activeSubItem} ml="24px" />
                 </AtomBox>
               </Flex>
               <Flex alignItems="center" height="100%">
-                <AtomBox mr="12px" display={{ xs: "none", lg: "block" }}>
+                {/* <AtomBox mr="12px" display={{ xs: "none", lg: "block" }}>
                   <CakePrice chainId={chainId} showSkeleton={false} cakePriceUsd={cakePriceUsd} />
                 </AtomBox>
                 <Box mt="4px">
@@ -166,27 +166,27 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
                     color="textSubtle"
                     hideLanguage
                   />
-                </Box>
+                </Box> */}
                 {rightSide}
               </Flex>
             </StyledNav>
           </FixedContainer>
           {subLinks ? (
             <Flex justifyContent="space-around" overflow="hidden">
-              <SubMenuItems
+              {/* <SubMenuItems
                 items={subLinksWithoutMobile}
                 mt={`${totalTopMenuHeight + 1}px`}
                 activeItem={activeSubItem}
-              />
+              /> */}
 
-              {subLinksMobileOnly && subLinksMobileOnly?.length > 0 && (
+              {/* {subLinksMobileOnly && subLinksMobileOnly?.length > 0 && (
                 <SubMenuItems
                   items={subLinksMobileOnly}
                   mt={`${totalTopMenuHeight + 1}px`}
                   activeItem={activeSubItem}
                   isMobileOnly
                 />
-              )}
+              )} */}
             </Flex>
           ) : (
             <div />
@@ -196,7 +196,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
           </BodyWrapper>
         </Wrapper>
       </AtomBox>
-      <Footer
+      {/* <Footer
         chainId={chainId}
         items={footerLinks}
         isDark={isDark}
@@ -208,10 +208,10 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
         buyCakeLabel={buyCakeLabel}
         buyCakeLink={buyCakeLink}
         mb={[`${MOBILE_MENU_HEIGHT}px`, null, "0px"]}
-      />
-      <AtomBox display={{ xs: "block", md: "none" }}>
+      /> */}
+      {/* <AtomBox display={{ xs: "block", md: "none" }}>
         <BottomNav items={links} activeItem={activeItem} activeSubItem={activeSubItem} />
-      </AtomBox>
+      </AtomBox> */}
     </MenuContext.Provider>
   );
 };

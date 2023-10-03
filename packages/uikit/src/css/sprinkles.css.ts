@@ -28,7 +28,7 @@ const extendedSpace = {
 } as const;
 
 const margin = { ...vars.space, auto: "auto" };
-const extendedHeight = { "100vh": "100vh" };
+const extendedHeight = { "100vh": "100vh", extra: "calc(100vh - 57px)" };
 
 const responsiveProperties = defineProperties({
   conditions: {

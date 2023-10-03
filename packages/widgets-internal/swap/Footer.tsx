@@ -1,6 +1,6 @@
 import { memo, ReactNode } from 'react'
 import { styled } from 'styled-components'
-import { useTranslation } from '@pancakeswap/localization'
+// import { useTranslation } from '@pancakeswap/localization'
 import { LinkExternal, Flex, Svg, Image, Button } from '@pancakeswap/uikit'
 
 const Wrapper = styled.div<{ $isSide: boolean }>`
@@ -52,10 +52,10 @@ const Footer: React.FC<
   externalLinkUrl,
   helpImage = <Image src="https://cdn.pancakeswap.com/help/help.png" alt="Get some help" width={160} height={108} />,
 }) => {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const isSide = variant === 'side'
   return (
-    <Wrapper $isSide={isSide}>
+    <Wrapper $isSide={!isSide}>
       {externalText && externalLinkUrl && (
         <Flex flexDirection={isSide ? 'column' : ['column', 'column', 'row']} alignItems="center">
           <LinkExternal
@@ -69,8 +69,8 @@ const Footer: React.FC<
           </LinkExternal>
         </Flex>
       )}
-      {isSide && <Flex flexGrow={1} />}
-      {helpUrl && (
+      {/* {isSide && <Flex flexGrow={1} />} */}
+      {/* {helpUrl && (
         <Flex
           flexGrow={isSide ? 0 : 1}
           alignItems="center"
@@ -87,7 +87,7 @@ const Footer: React.FC<
           </BubbleWrapper>
           {helpImage}
         </Flex>
-      )}
+      )} */}
     </Wrapper>
   )
 }
