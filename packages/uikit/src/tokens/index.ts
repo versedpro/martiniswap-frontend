@@ -3,7 +3,8 @@ import { darkColors, lightColors, additionalColors, baseColors } from "./colors"
 export { darkColors, lightColors, additionalColors, baseColors };
 
 export const shadows = {
-  level1: "0px 2px 12px -8px rgba(25, 19, 38, 0.1), 0px 1px 1px rgba(25, 19, 38, 0.05)",
+  level1:
+    "8px 8px 24px 0 rgba(9, 13, 20, 0.06), -4px -4px 8px 0 rgba(255, 255, 255, 0.4), 0 1px 1px 0 rgba(9, 13, 20, 0.06)",
   active: "0px 0px 0px 1px #0098A1, 0px 0px 4px 8px rgba(31, 199, 212, 0.4)",
   success: "0px 0px 0px 1px #31D0AA, 0px 0px 0px 4px rgba(49, 208, 170, 0.2)",
   warning: "0px 0px 0px 1px #D67E0A, 0px 0px 0px 4px rgba(214, 126, 10, 0.2)",
@@ -53,7 +54,7 @@ export const tokens = {
     "32px": "32px",
     small: "4px",
     default: "16px",
-    card: "24px",
+    card: "8px",
     circle: "50%",
   },
   fontSizes: {

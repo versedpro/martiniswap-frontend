@@ -8,6 +8,8 @@ export const light: CardTheme = {
   boxShadowActive: vars.shadows.active,
   boxShadowSuccess: vars.shadows.success,
   boxShadowWarning: vars.shadows.warning,
+  gradientAlt: lightColors.gradprimary,
+  gradientBeta: lightColors.gradsecondary,
   cardHeaderBackground: {
     default: lightColors.gradientCardHeader,
     blue: lightColors.gradientBlue,
@@ -23,6 +25,8 @@ export const dark: CardTheme = {
   boxShadowActive: vars.shadows.active,
   boxShadowSuccess: vars.shadows.success,
   boxShadowWarning: vars.shadows.warning,
+  gradientAlt: darkColors.gradprimary,
+  gradientBeta: darkColors.gradsecondary,
   cardHeaderBackground: {
     default: darkColors.gradientCardHeader,
     blue: darkColors.gradientBlue,

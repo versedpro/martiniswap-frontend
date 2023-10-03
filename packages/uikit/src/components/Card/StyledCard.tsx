@@ -34,7 +34,9 @@ const getBorderColor = ({ isActive, isSuccess, isWarning, borderBackground, them
 export const StyledCard = styled.div.withConfig({
   shouldForwardProp,
 })<StyledCardProps>`
-  background: ${getBorderColor};
+  // background: ${getBorderColor};
+  border: 1px solid ${getBorderColor};
+  backdrop-filter: blur(40px);
   border-radius: ${({ theme }) => theme.radii.card};
   color: ${({ theme, isDisabled }) => theme.colors[isDisabled ? "textDisabled" : "text"]};
   overflow: hidden;
@@ -47,7 +49,7 @@ export const StyledCard = styled.div.withConfig({
       background-size: 400% 400%;
     `}
 
-  padding: 1px 1px 3px 1px;
+  // padding: 1px 1px 3px 1px;
 
   ${space}
 `;
@@ -55,8 +57,14 @@ export const StyledCard = styled.div.withConfig({
 export const StyledCardInner = styled(Box)<{ background?: string; hasCustomBorder: boolean }>`
   width: 100%;
   height: 100%;
+  background: ${({ theme, background }) => {
+    if (background) {
+      return background ?? theme.card.background;
+    }
+    return theme.card.gradientBeta;
+  }};
   overflow: ${({ hasCustomBorder }) => (hasCustomBorder ? "initial" : "inherit")};
-  background: ${({ theme, background }) => background ?? theme.card.background};
+  // background: ${({ theme, background }) => background ?? theme.card.background};
   border-radius: ${({ theme }) => theme.radii.card};
 `;
 

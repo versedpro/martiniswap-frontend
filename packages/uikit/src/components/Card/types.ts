@@ -15,6 +15,8 @@ export type CardTheme = {
   boxShadowActive: string;
   boxShadowSuccess: string;
   boxShadowWarning: string;
+  gradientAlt: string;
+  gradientBeta: string;
   cardHeaderBackground: {
     default: string;
     blue: string;

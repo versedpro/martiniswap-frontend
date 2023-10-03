@@ -21,7 +21,7 @@ const Link: React.FC<React.PropsWithChildren<LinkProps>> = ({ external, ...props
 
 /* eslint-disable react/default-props-match-prop-types */
 Link.defaultProps = {
-  color: "primary",
+  color: "secondary",
 };
 
 export default Link;
