@@ -1,8 +1,8 @@
 {
-  "short_name": "PancakeSwap",
-  "name": "PancakeSwap",
+  "short_name": "Valid Swap",
+  "name": "Valid Swap",
   "description": "Farm CAKE with Pancake LP Tokens",
-  "homepage_url": "https://pancakeswap.finance",
+  "homepage_url": "https://www.valid-swap.io/",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#1FC7D4",
