@@ -6,6 +6,7 @@ import { LinkProps } from "./types";
 
 export const StyledLink = styled(Text)<LinkProps>`
   display: flex;
+  font-size: 24px;
   font-weight: 600;
   align-items: center;
   width: fit-content;

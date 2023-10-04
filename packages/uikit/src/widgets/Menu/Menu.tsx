@@ -12,7 +12,7 @@ import { AtomBox } from "../../components/AtomBox";
 import MenuItems from "../../components/MenuItems/MenuItems";
 // import { SubMenuItems } from "../../components/SubMenuItems";
 import { useMatchBreakpoints } from "../../contexts";
-// import Logo from "./components/Logo";
+import Logo from "./components/Logo";
 import { MENU_HEIGHT, MOBILE_MENU_HEIGHT, TOP_BANNER_HEIGHT, TOP_BANNER_HEIGHT_MOBILE } from "./config";
 import { MenuContext } from "./context";
 import { NavProps } from "./types";
@@ -129,7 +129,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
   }, [totalTopMenuHeight]);
 
   // Find the home link if provided
-  // const homeLink = links.find((link) => link.label === "Home");
+  const homeLink = links.find((link) => link.label === "Home");
 
   // const subLinksWithoutMobile = useMemo(() => subLinks?.filter((subLink) => !subLink.isMobileOnly), [subLinks]);
   // const subLinksMobileOnly = useMemo(() => subLinks?.filter((subLink) => subLink.isMobileOnly), [subLinks]);
@@ -148,7 +148,7 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
             {banner && isMounted && <TopBannerContainer height={topBannerHeight}>{banner}</TopBannerContainer>}
             <StyledNav>
               <Flex>
-                {/* <Logo href={homeLink?.href ?? "/"} /> */}
+                <Logo href={homeLink?.href ?? "/"} />
                 <AtomBox display={{ xs: "none", md: "block" }}>
                   <MenuItems items={links} activeItem={activeItem} activeSubItem={activeSubItem} ml="24px" />
                 </AtomBox>
