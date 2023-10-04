@@ -55,7 +55,7 @@ const config: (
       showItemsOnMobile: false,
       items: [
         {
-          label: `${t('Earn')} (cooming soon)`,
+          label: `${t('Earn')} (coming soon)`,
           disabled: true,
           status: { text: t('New'), color: 'success' },
         },
