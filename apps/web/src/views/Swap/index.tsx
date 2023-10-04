@@ -1,6 +1,7 @@
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency } from '@pancakeswap/sdk'
-import { BottomDrawer, Flex, Modal, ModalV2, useMatchBreakpoints } from '@pancakeswap/uikit'
+import { Flex, Modal, ModalV2, useMatchBreakpoints } from '@pancakeswap/uikit'
+// import { BottomDrawer, Flex, Modal, ModalV2, useMatchBreakpoints } from '@pancakeswap/uikit'
 import replaceBrowserHistory from '@pancakeswap/utils/replaceBrowserHistory'
 import { AppBody } from 'components/App'
 import { useRouter } from 'next/router'
@@ -9,11 +10,12 @@ import { useSwapActionHandlers } from 'state/swap/useSwapActionHandlers'
 import { currencyId } from 'utils/currencyId'
 
 import { useSwapHotTokenDisplay } from 'hooks/useSwapHotTokenDisplay'
-import { useCurrency } from 'hooks/Tokens'
+// import { useCurrency } from 'hooks/Tokens'
 import { Field } from 'state/swap/actions'
-import { useDefaultsFromURLSearch, useSingleTokenSwapInfo, useSwapState } from 'state/swap/hooks'
+// import { useDefaultsFromURLSearch, useSingleTokenSwapInfo, useSwapState } from 'state/swap/hooks'
+import { useDefaultsFromURLSearch, useSwapState } from 'state/swap/hooks'
 import Page from '../Page'
-import PriceChartContainer from './components/Chart/PriceChartContainer'
+// import PriceChartContainer from './components/Chart/PriceChartContainer'
 import HotTokenList from './components/HotTokenList'
 import useWarningImport from './hooks/useWarningImport'
 import { V3SwapForm } from './V3Swap'
@@ -51,15 +53,15 @@ export default function Swap() {
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
   } = useSwapState()
-  const inputCurrency = useCurrency(inputCurrencyId)
-  const outputCurrency = useCurrency(outputCurrencyId)
+  // const inputCurrency = useCurrency(inputCurrencyId)
+  // const outputCurrency = useCurrency(outputCurrencyId)
 
-  const currencies: { [field in Field]?: Currency } = {
-    [Field.INPUT]: inputCurrency ?? undefined,
-    [Field.OUTPUT]: outputCurrency ?? undefined,
-  }
+  // const currencies: { [field in Field]?: Currency } = {
+  //   [Field.INPUT]: inputCurrency ?? undefined,
+  //   [Field.OUTPUT]: outputCurrency ?? undefined,
+  // }
 
-  const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
+  // const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
   const warningSwapHandler = useWarningImport()
   useDefaultsFromURLSearch()
   const { onCurrencySelection } = useSwapActionHandlers()
@@ -82,7 +84,7 @@ export default function Swap() {
   return (
     <Page removePadding={isChartExpanded} hideFooterOnDesktop={isChartExpanded}>
       <Flex width={['328px', '100%']} height="100%" justifyContent="center" position="relative" alignItems="flex-start">
-        {isDesktop && isChartSupported && (
+        {/* {isDesktop && isChartSupported && (
           <PriceChartContainer
             inputCurrencyId={inputCurrencyId}
             inputCurrency={currencies[Field.INPUT]}
@@ -116,7 +118,7 @@ export default function Swap() {
         )}
         {isDesktop && isSwapHotTokenDisplay && isHotTokenSupported && (
           <HotTokenList handleOutputSelect={handleOutputSelect} />
-        )}
+        )} */}
         <ModalV2
           isOpen={!isDesktop && isSwapHotTokenDisplay && isHotTokenSupported}
           onDismiss={() => setIsSwapHotTokenDisplay(false)}
