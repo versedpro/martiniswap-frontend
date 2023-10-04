@@ -70,6 +70,7 @@ import { VaultKey } from 'state/types'
 import { erc721CollectionABI } from 'config/abi/erc721collection'
 import { infoStableSwapABI } from 'config/abi/infoStableSwap'
 import { wethABI } from 'config/abi/weth'
+import { swiperABI } from 'config/abi/swiper'
 /**
  * Helper hooks to get specific contracts (by ABI)
  */
@@ -256,6 +257,10 @@ export function useContract<TAbi extends Abi>(
 
 export function useTokenContract(tokenAddress?: Address) {
   return useContract(tokenAddress, erc20ABI)
+}
+
+export function useSwiperTokenContract(tokenAddress?: Address) {
+  return useContract(tokenAddress, swiperABI)
 }
 
 export function useWNativeContract() {
