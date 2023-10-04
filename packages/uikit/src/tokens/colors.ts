@@ -77,7 +77,7 @@ export const darkColors = {
   tertiary: "#353547",
   text: "#FFFFFF",
   text99: "#F4EEFF99",
-  textDisabled: "#eeeeee",
+  textDisabled: "#666171",
   textSubtle: "#B8ADD2",
   disabled: "#524B63",
   gradprimary: "linear-gradient(to bottom right, #00ffaa , #4579f5 53%, #9c42f5)",

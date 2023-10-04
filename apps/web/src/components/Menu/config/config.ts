@@ -1,26 +1,26 @@
 import { ContextApi } from '@pancakeswap/localization'
-// import { SUPPORTED_CHAIN_IDS as POOL_SUPPORTED_CHAINS } from '@pancakeswap/pools'
+import { SUPPORTED_CHAIN_IDS as POOL_SUPPORTED_CHAINS } from '@pancakeswap/pools'
 import {
-  // BirthdayIcon,
-  // DropdownMenuItemType,
+  BirthdayIcon,
+  DropdownMenuItemType,
   DropdownMenuItems,
-  // EarnFillIcon,
-  // EarnIcon,
+  EarnFillIcon,
+  EarnIcon,
   MenuItemsType,
-  // MoreIcon,
-  // PancakeProtectorIcon,
+  MoreIcon,
+  PancakeProtectorIcon,
   SwapFillIcon,
   SwapIcon,
 } from '@pancakeswap/uikit'
-// import {
-//   FIXED_STAKING_SUPPORTED_CHAINS,
-//   LIQUID_STAKING_SUPPORTED_CHAINS,
-//   SUPPORT_BUY_CRYPTO,
-//   SUPPORT_FARMS,
-//   SUPPORT_ONLY_BSC,
-// } from 'config/constants/supportChains'
-// import { getPerpetualUrl } from 'utils/getPerpetualUrl'
-// import { nftsBaseUrl } from 'views/Nft/market/constants'
+import {
+  FIXED_STAKING_SUPPORTED_CHAINS,
+  LIQUID_STAKING_SUPPORTED_CHAINS,
+  SUPPORT_BUY_CRYPTO,
+  SUPPORT_FARMS,
+  SUPPORT_ONLY_BSC,
+} from 'config/constants/supportChains'
+import { getPerpetualUrl } from 'utils/getPerpetualUrl'
+import { nftsBaseUrl } from 'views/Nft/market/constants'
 
 export type ConfigMenuDropDownItemsType = DropdownMenuItems & { hideSubNav?: boolean }
 export type ConfigMenuItemsType = Omit<MenuItemsType, 'items'> & { hideSubNav?: boolean; image?: string } & {
@@ -55,9 +55,14 @@ const config: (
       showItemsOnMobile: false,
       items: [
         {
-          label: t('Swap'),
-          href: '/swap',
+          label: `${t('Earn')} (cooming soon)`,
+          disabled: true,
+          status: { text: t('New'), color: 'success' },
         },
+        // {
+        //   label: t('Swap'),
+        //   href: '/swap',
+        // },
         // {
         //   label: t('Liquidity'),
         //   href: '/liquidity',
