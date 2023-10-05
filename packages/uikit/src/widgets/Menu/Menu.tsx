@@ -13,9 +13,11 @@ import MenuItems from "../../components/MenuItems/MenuItems";
 // import { SubMenuItems } from "../../components/SubMenuItems";
 import { useMatchBreakpoints } from "../../contexts";
 import Logo from "./components/Logo";
-import { MENU_HEIGHT, MOBILE_MENU_HEIGHT, TOP_BANNER_HEIGHT, TOP_BANNER_HEIGHT_MOBILE } from "./config";
+import { MENU_HEIGHT, TOP_BANNER_HEIGHT, TOP_BANNER_HEIGHT_MOBILE } from "./config";
+// import { MENU_HEIGHT, MOBILE_MENU_HEIGHT, TOP_BANNER_HEIGHT, TOP_BANNER_HEIGHT_MOBILE } from "./config";
 import { MenuContext } from "./context";
 import { NavProps } from "./types";
+import { CertikIcon } from "../..";
 
 const Wrapper = styled.div`
   position: relative;
@@ -74,21 +76,21 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
   linkComponent = "a",
   banner,
   rightSide,
-  isDark,
-  toggleTheme,
-  currentLang,
-  setLang,
-  cakePriceUsd,
+  // isDark,
+  // toggleTheme,
+  // currentLang,
+  // setLang,
+  // cakePriceUsd,
   links,
   subLinks,
-  footerLinks,
+  // footerLinks,
   activeItem,
   activeSubItem,
-  langs,
-  buyCakeLabel,
-  buyCakeLink,
+  // langs,
+  // buyCakeLabel,
+  // buyCakeLink,
   children,
-  chainId,
+  // chainId,
 }) => {
   const { isMobile } = useMatchBreakpoints();
   const isMounted = useIsMounted();
@@ -167,6 +169,9 @@ const Menu: React.FC<React.PropsWithChildren<NavProps>> = ({
                     hideLanguage
                   />
                 </Box> */}
+                <Box mr="8px">
+                  <CertikIcon />
+                </Box>
                 {rightSide}
               </Flex>
             </StyledNav>

@@ -26,6 +26,7 @@ export { default as CameraIcon } from "./Icons/Camera";
 export { default as Cards } from "./Icons/Cards";
 export { default as CardViewIcon } from "./Icons/CardView";
 export { default as ChartDisableIcon } from "./Icons/ChartDisable";
+export { default as CertikIcon } from "./Icons/Certik";
 export { default as ChartIcon } from "./Icons/Chart";
 export { default as CheckmarkCircleFillIcon } from "./Icons/CheckmarkCircleFill";
 export { default as CheckmarkCircleIcon } from "./Icons/CheckmarkCircle";
