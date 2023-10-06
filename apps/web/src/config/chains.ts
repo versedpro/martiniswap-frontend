@@ -4,7 +4,7 @@ import {
   bsc as bsc_,
   bscTestnet,
   // goerli,
-  mainnet,
+  // mainnet,
   // zkSync,
   // zkSyncTestnet,
   // polygonZkEvmTestnet,
@@ -193,7 +193,7 @@ export const L2_CHAIN_IDS: ChainId[] = [
 
 export const CHAINS = [
   bsc,
-  mainnet,
+  // mainnet,
   // bscTestnet,
   // goerli,
   // polygonZkEvm,
