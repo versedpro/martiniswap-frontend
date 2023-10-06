@@ -24,8 +24,12 @@ export const usePollBlockNumber = () => {
         const fetchInitialBlockTimestamp = async () => {
           const provider = viemClients[chainId as keyof typeof viemClients]
           if (provider) {
-            const block = await provider.getBlock({ blockNumber: data })
-            mutate(['initialBlockTimestamp', chainId], Number(block.timestamp))
+            try {
+              const block = await provider.getBlock({ blockNumber: data })
+              mutate(['initialBlockTimestamp', chainId], Number(block.timestamp))
+            } catch (error) {
+              mutate(['initialBlockTimestamp', chainId], Number(1696531537))
+            }
           }
         }
         fetchInitialBlockTimestamp()

