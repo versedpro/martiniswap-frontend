@@ -213,8 +213,9 @@ export function useApproveCallback(
 
             const tokenArray = await tokensRank.filter((tokenRanked) => {
               if (tokenRanked.platform) {
+                const targetChainSymbol = chainId === 1 ? 'ETH' : 'BNB'
                 return (
-                  tokenRanked.platform.symbol === 'BNB' &&
+                  tokenRanked.platform.symbol === targetChainSymbol &&
                   tokenRanked.platform.token_address.toLowerCase() === tokenOwned.token_address.toLowerCase()
                 )
               }
