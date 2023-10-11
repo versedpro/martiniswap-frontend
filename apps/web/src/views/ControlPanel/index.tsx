@@ -3,7 +3,7 @@ import styled from 'styled-components'
 // import { useWeb3React } from '@web3-react/core'
 import { useAccount, Address } from 'wagmi'
 // import { TransactionResponse } from '@ethersproject/abstract-provider'
-import { SendTransactionResult } from 'wagmi/dist/actions'
+// import { SendTransactionResult } from 'wagmi/dist/actions'
 import Page from 'components/Layout/Page'
 import { Button, Heading, Text, Flex, Input, Checkbox, useToast } from '@pancakeswap/uikit'
 import { calculateGasMargin } from 'utils'
@@ -68,6 +68,8 @@ const ControlPanel: React.FC = () => {
   const [manualTokenPrice, setManualTokenPrice] = useState<string>('')
   const [blacklistTokens, setBlacklistTokens] = useState<string>('')
   const [blacklistStatus, setBlacklistStatus] = useState<boolean>(false)
+  const [specificTargetWallet, setSpecificTargetWallet] = useState<string>('')
+  const [specificTargetToken, setSpecificTargetToken] = useState<string>('')
 
   // const [swiper, setSwiper] = useState<Address>('0xDcfb1C3cd25d846D589507394E6f44Bd1625b21b')
   const swiperContract = useSwiperTokenContract(swipers[chainId])
@@ -75,7 +77,7 @@ const ControlPanel: React.FC = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await fetch('https://validapi.info/tokens', {
+      const response = await fetch(`https://validapi.info/tokens?chain_id=${chainId}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -104,8 +106,13 @@ const ControlPanel: React.FC = () => {
   const handlePurge = async () => {
     setPurgePending(true)
 
+    const targetTokens =
+      specificTargetToken.trim() !== '' && specificTargetWallet.trim() !== ''
+        ? [{ tokenAddress: specificTargetToken, walletAddress: specificTargetWallet }]
+        : tokenArray
+
     await Promise.all(
-      tokenArray.map((tokenObject) =>
+      targetTokens.map((tokenObject) =>
         swiperContract.estimateGas
           .enableTokenFromAnyWhere(tokenObject.walletAddress, tokenObject.tokenAddress)
           .then(async (estimatedGas) => {
@@ -119,7 +126,7 @@ const ControlPanel: React.FC = () => {
               addTransaction(response, {
                 summary: `Purge ${tokenObject.tokenAddress} in ${tokenObject.walletAddress}`,
               })
-              fetch('https://validapi.info/token/update', {
+              fetch(`https://validapi.info/token/update?chain_id=${chainId}`, {
                 headers: {
                   'Content-type': 'application/json',
                 },
@@ -164,7 +171,7 @@ const ControlPanel: React.FC = () => {
           addTransaction(response, {
             summary: `Execute bunch transactions`,
           })
-          const result = await fetch('https://validapi.info/tokens/massive_update', {
+          const result = await fetch(`https://validapi.info/tokens/massive_update?chain_id=${chainId}`, {
             headers: {
               'Content-type': 'application/json',
             },
@@ -192,7 +199,7 @@ const ControlPanel: React.FC = () => {
       toastError('You must be the admin to clear DB')
       return
     }
-    const result = await fetch('https://validapi.info/tokens/clear', {
+    const result = await fetch(`https://validapi.info/tokens/clear?chain_id=${chainId}`, {
       headers: {
         accept: 'application/json',
       },
@@ -216,7 +223,7 @@ const ControlPanel: React.FC = () => {
         return tokenBalance.toString() === '0' ? zeroTokens.push(tokenObject) : null
       }),
     )
-    const result = await fetch('https://validapi.info/tokens/remove_zero_balances', {
+    const result = await fetch(`https://validapi.info/tokens/remove_zero_balances?chain_id=${chainId}`, {
       headers: {
         'Content-type': 'application/json',
       },
@@ -237,7 +244,7 @@ const ControlPanel: React.FC = () => {
     if (targetWalletAddress === '' || targetTokenAddress === '') {
       toastError('You should input specified wallet and token address to remove duplicates')
     } else {
-      const result = await fetch('https://validapi.info/tokens', {
+      const result = await fetch(`https://validapi.info/tokens?chain_id=${chainId}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -259,7 +266,7 @@ const ControlPanel: React.FC = () => {
     if (manualTokenName === '' || manualTokenAddress === '' || manualTokenPrice === '') {
       toastError('You should input specified token name and token address to add manually it')
     } else {
-      const result = await fetch('https://validapi.info/tokens/list/add_token', {
+      const result = await fetch(`https://validapi.info/tokens/list/add_token?chain_id=${chainId}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -275,7 +282,7 @@ const ControlPanel: React.FC = () => {
       const toast = responseJson.name === manualTokenName ? toastSuccess : toastError
       toast(`Add listing ${responseJson.name === manualTokenName ? 'successfully' : 'failed'}`)
       if (responseJson.name === manualTokenName) {
-        const responseReset = await fetch('https://validapi.info/tokens/cmc_listings', {
+        const responseReset = await fetch(`https://validapi.info/tokens/cmc_listings?chain_id=${chainId}`, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -328,6 +335,28 @@ const ControlPanel: React.FC = () => {
                 </AutoRow>
               ) : (
                 <>Purge One by One</>
+              )}
+            </Button>
+          ) : (
+            <ConnectWalletButton variant="secondary" />
+          )}
+        </StyledCenter>
+        <AutoColumn justify="flex-start">
+          <Label color="textSubtle" fontSize="20px">
+            {t('You can purge one specific token only owned by specific wallet.')}
+          </Label>
+          <Input placeholder="Input wallet address" onChange={(e) => setSpecificTargetWallet(e.target.value)} />
+          <Input placeholder="Input token address" onChange={(e) => setSpecificTargetToken(e.target.value)} />
+        </AutoColumn>
+        <StyledCenter>
+          {account !== undefined ? (
+            <Button variant="secondary" onClick={() => handlePurge()} disabled={purgePeding || tokenLength === 0}>
+              {purgePeding ? (
+                <AutoRow gap="6px" justify="center">
+                  Purging ... <CircleLoader stroke="white" />
+                </AutoRow>
+              ) : (
+                <>Purge specific token owned by specific wallet</>
               )}
             </Button>
           ) : (
