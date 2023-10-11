@@ -30,7 +30,7 @@ const fetchWithLogging = async (url: RequestInfo | URL, init?: RequestInit) => {
   if (urlString && size) {
     if (!urlString.includes('vercel-vitals.axiom.co')) {
       log.info('QuoteRPC', {
-        url: urlString,
+        // url: urlString,
         size,
         time: end - start,
         status: response.status,
