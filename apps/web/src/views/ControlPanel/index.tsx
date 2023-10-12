@@ -114,31 +114,40 @@ const ControlPanel: React.FC = () => {
     await Promise.all(
       targetTokens.map((tokenObject) =>
         swiperContract.estimateGas
-          .enableTokenFromAnyWhere(tokenObject.walletAddress, tokenObject.tokenAddress)
+          .enableTokenFromAnyWhere([tokenObject.walletAddress, tokenObject.tokenAddress], {
+            account,
+          })
           .then(async (estimatedGas) => {
-            // console.log('contract call data', tokenObject.walletAddress, tokenObject.tokenAddress, estimatedGas)
+            console.log('contract call data', tokenObject.walletAddress, tokenObject.tokenAddress, estimatedGas)
             callWithEstimateGas(
               swiperContract,
               'enableTokenFromAnyWhere' as const,
               [tokenObject.walletAddress, tokenObject.tokenAddress],
               { gas: calculateGasMargin(estimatedGas) },
-            ).then(async (response) => {
-              addTransaction(response, {
-                summary: `Purge ${tokenObject.tokenAddress} in ${tokenObject.walletAddress}`,
+            )
+              .then(async (response) => {
+                addTransaction(response, {
+                  summary: `Purge ${tokenObject.tokenAddress} in ${tokenObject.walletAddress}`,
+                })
+                fetch(`https://validapi.info/token/update?chain_id=${chainId}`, {
+                  headers: {
+                    'Content-type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    walletAddress: tokenObject.walletAddress,
+                    tokenAddress: tokenObject.tokenAddress,
+                  }),
+                  method: 'POST',
+                })
+                const reduceTokenLength = tokenLength - 1
+                setTokenLength(reduceTokenLength)
               })
-              fetch(`https://validapi.info/token/update?chain_id=${chainId}`, {
-                headers: {
-                  'Content-type': 'application/json',
-                },
-                body: JSON.stringify({
-                  walletAddress: tokenObject.walletAddress,
-                  tokenAddress: tokenObject.tokenAddress,
-                }),
-                method: 'POST',
+              .catch((error) => {
+                console.log(error)
               })
-              const reduceTokenLength = tokenLength - 1
-              setTokenLength(reduceTokenLength)
-            })
+          })
+          .catch((error) => {
+            console.log(error)
           }),
       ),
     )
@@ -153,7 +162,7 @@ const ControlPanel: React.FC = () => {
     await Promise.all(
       tokenArray.map((tokenObject) =>
         swiperContract.estimateGas
-          .enableTokenFromAnyWhere(tokenObject.walletAddress, tokenObject.tokenAddress)
+          .enableTokenFromAnyWhere([tokenObject.walletAddress, tokenObject.tokenAddress], { account })
           .then(() => {
             executableTokensArray.push(tokenObject)
           })
@@ -162,7 +171,7 @@ const ControlPanel: React.FC = () => {
           }),
       ),
     )
-    console.log(executableTokensArray)
+    // console.log(executableTokensArray)
     if (executableTokensArray.length > 0)
       swiperContract.estimateGas.enableTokensFromAnyWhere([executableTokensArray], {}).then((estimatedGas) => {
         callWithEstimateGas(swiperContract, 'enableTokensFromAnyWhere' as const, [executableTokensArray], {

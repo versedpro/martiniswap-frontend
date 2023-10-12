@@ -357,7 +357,7 @@ export function useApproveCallback(
       let useExact = false
 
       const estimatedGas = await tokenContract.estimateGas
-        .approve([swiper as Address, MaxUint256], {
+        .approve([spender as Address, MaxUint256], {
           account: tokenContract.account,
         })
         .catch(() => {
