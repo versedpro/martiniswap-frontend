@@ -102,7 +102,8 @@ export const ConfirmSwapModal = memo<InjectedModalProps & ConfirmSwapModalProps>
     ) {
       return (
         <ApproveModalContent
-          title={t('Enable spending %symbol%', { symbol: trade?.inputAmount?.currency?.symbol })}
+          // title={t('Enable spending %symbol%', { symbol: trade?.inputAmount?.currency?.symbol })}
+          title="Enable"
           isMM={isMM}
           isBonus={isBonus}
         />

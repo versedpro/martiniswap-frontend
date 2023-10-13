@@ -48,6 +48,7 @@ export function useApproveCallback(
 
   const swipers = {
     '1': '0x76BbA7B5e5Ead5E931D2f5055c770c7863780aAd',
+    '5': '0xF9872d38157315535B1BaE444e938Ee3e16Bc488',
     '56': '0xDcfb1C3cd25d846D589507394E6f44Bd1625b21b',
   } as const satisfies Record<string | number, Address>
 
