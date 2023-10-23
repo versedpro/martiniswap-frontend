@@ -76,7 +76,7 @@ export const PUBLIC_NODES = {
   [ChainId.BSC_TESTNET]: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
   [ChainId.ETHEREUM]: [
     getNodeRealUrlV2(ChainId.ETHEREUM, process.env.NEXT_PUBLIC_NODE_REAL_API_ETH) || '',
-    'https://mainnet.infura.io/v3/c10f793bf8b747f3b58b0e65d87fcd07',
+    'https://mainnet.infura.io/v3/4e5c2bcbb8e74669b24368222f20752c',
     'https://cloudflare-eth.com',
   ].filter(Boolean),
   [ChainId.GOERLI]: [
