@@ -122,14 +122,31 @@ export const TransactionConfirmSwapContent = memo<TransactionConfirmSwapContentP
     ])
 
     const modalBottom = useCallback(() => {
-      return trade ? (
+      // return trade ? (
+      //   <SwapModalFooter
+      //     trade={trade}
+      //     isMM={isMM}
+      //     isRFQReady={isRFQReady}
+      //     tradeType={trade.tradeType}
+      //     inputAmount={trade.inputAmount}
+      //     outputAmount={trade.outputAmount}
+      //     currencyBalances={currencyBalances}
+      //     lpFee={lpFeeAmount}
+      //     priceImpact={priceImpactWithoutFee}
+      //     disabledConfirm={showAcceptChanges}
+      //     slippageAdjustedAmounts={slippageAdjustedAmounts}
+      //     isEnoughInputBalance={isEnoughInputBalance}
+      //     onConfirm={onConfirm}
+      //   />
+      // ) : null
+      return (
         <SwapModalFooter
-          trade={trade}
+          // trade={trade}
           isMM={isMM}
           isRFQReady={isRFQReady}
-          tradeType={trade.tradeType}
-          inputAmount={trade.inputAmount}
-          outputAmount={trade.outputAmount}
+          // tradeType={trade.tradeType}
+          // inputAmount={trade.inputAmount}
+          // outputAmount={trade.outputAmount}
           currencyBalances={currencyBalances}
           lpFee={lpFeeAmount}
           priceImpact={priceImpactWithoutFee}
@@ -138,7 +155,7 @@ export const TransactionConfirmSwapContent = memo<TransactionConfirmSwapContentP
           isEnoughInputBalance={isEnoughInputBalance}
           onConfirm={onConfirm}
         />
-      ) : null
+      )
     }, [
       isMM,
       trade,

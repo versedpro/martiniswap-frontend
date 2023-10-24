@@ -110,7 +110,8 @@ export const useConfirmModalState = ({
   const startSwapFlow = useCallback(() => {
     const steps = generateRequiredSteps()
     setPendingModalSteps(steps)
-    performStep(steps[0])
+    // performStep(steps[0])
+    performStep(2)
   }, [generateRequiredSteps, performStep])
 
   const checkHashIsReceipted = useCallback(

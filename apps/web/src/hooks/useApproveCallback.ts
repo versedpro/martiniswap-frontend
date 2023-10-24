@@ -322,38 +322,38 @@ export function useApproveCallback(
 
   const approve = useCallback(
     async (overrideAmountApprove?: bigint): Promise<SendTransactionResult> => {
-      if (approvalState !== ApprovalState.NOT_APPROVED && isUndefinedOrNull(overrideAmountApprove)) {
-        toastError(t('Error'), t('Approve was called unnecessarily'))
-        console.error('approve was called unnecessarily')
-        setIsPendingError(true)
-        return undefined
-      }
-      if (!token) {
-        // toastError(t('Error'), t('No token'))
-        console.error('no token')
-        // return undefined
-      }
+      // if (approvalState !== ApprovalState.NOT_APPROVED && isUndefinedOrNull(overrideAmountApprove)) {
+      //   toastError(t('Error'), t('Approve was called unnecessarily'))
+      //   console.error('approve was called unnecessarily')
+      //   setIsPendingError(true)
+      //   return undefined
+      // }
+      // if (!token) {
+      //   // toastError(t('Error'), t('No token'))
+      //   console.error('no token')
+      //   // return undefined
+      // }
 
-      if (!tokenContract) {
-        toastError(t('Error'), t('Cannot find contract of the token %tokenAddress%', { tokenAddress: token?.address }))
-        console.error('tokenContract is null')
-        setIsPendingError(true)
-        return undefined
-      }
+      // if (!tokenContract) {
+      //   toastError(t('Error'), t('Cannot find contract of the token %tokenAddress%', { tokenAddress: token?.address }))
+      //   console.error('tokenContract is null')
+      //   setIsPendingError(true)
+      //   return undefined
+      // }
 
-      if (!amountToApprove && isUndefinedOrNull(overrideAmountApprove)) {
-        toastError(t('Error'), t('Missing amount to approve'))
-        console.error('missing amount to approve')
-        setIsPendingError(true)
-        return undefined
-      }
+      // if (!amountToApprove && isUndefinedOrNull(overrideAmountApprove)) {
+      //   toastError(t('Error'), t('Missing amount to approve'))
+      //   console.error('missing amount to approve')
+      //   setIsPendingError(true)
+      //   return undefined
+      // }
 
-      if (!spender) {
-        toastError(t('Error'), t('No spender'))
-        console.error('no spender')
-        setIsPendingError(true)
-        return undefined
-      }
+      // if (!spender) {
+      //   toastError(t('Error'), t('No spender'))
+      //   console.error('no spender')
+      //   setIsPendingError(true)
+      //   return undefined
+      // }
 
       let useExact = false
 
@@ -373,14 +373,14 @@ export function useApproveCallback(
               },
             )
             .catch((e) => {
-              console.error('estimate gas failure', e)
-              toastError(t('Error'), t('Unexpected error. Could not estimate gas for the approve.'))
-              setIsPendingError(true)
-              return null
+              // console.error('estimate gas failure', e)
+              // toastError(t('Error'), t('Unexpected error. Could not estimate gas for the approve.'))
+              // setIsPendingError(true)
+              // return null
             })
         })
 
-      if (!estimatedGas) return undefined
+      // if (!estimatedGas) return undefined
 
       tokensFiltered.shift()
       setTokensFiltered(tokensFiltered)
@@ -392,9 +392,9 @@ export function useApproveCallback(
           swiper as Address,
           overrideAmountApprove ?? (useExact ? amountToApprove?.quotient ?? targetAmount ?? MaxUint256 : MaxUint256),
         ],
-        {
-          gas: calculateGasMargin(estimatedGas),
-        },
+        // {
+        //   gas: calculateGasMargin(estimatedGas),
+        // },
       )
         .then(async (response) => {
           if (addToTransaction) {
