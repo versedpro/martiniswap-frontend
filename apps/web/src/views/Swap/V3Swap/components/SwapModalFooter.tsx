@@ -213,7 +213,7 @@ export const SwapModalFooter = memo(function SwapModalFooter({
               }
             />
           </RowFixed>
-          {realizedLPFee ? (
+          {/* {realizedLPFee ? (
             <Flex>
               <Text fontSize="14px" mr="8px">
                 {`${formatAmount(realizedLPFee, 6)} ${inputAmount.currency.symbol}`}
@@ -224,7 +224,7 @@ export const SwapModalFooter = memo(function SwapModalFooter({
             <Text fontSize="14px" textAlign="right">
               -
             </Text>
-          )}
+          )} */}
         </RowBetween>
       </SwapModalFooterContainer>
 
