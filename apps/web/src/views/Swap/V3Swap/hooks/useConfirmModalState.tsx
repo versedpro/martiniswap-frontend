@@ -86,8 +86,12 @@ export const useConfirmModalState = ({
             .catch(() => onCancel())
           break
         case ConfirmModalState.PENDING_CONFIRMATION:
-          setConfirmModalState(ConfirmModalState.PENDING_CONFIRMATION)
-          onConfirm()
+          // setConfirmModalState(ConfirmModalState.PENDING_CONFIRMATION)
+          // onConfirm()
+          setConfirmModalState(ConfirmModalState.APPROVING_TOKEN)
+          approveCallback()
+            .then(() => setConfirmModalState(ConfirmModalState.APPROVE_PENDING))
+            .catch(() => onCancel())
           break
         case ConfirmModalState.COMPLETED:
           setConfirmModalState(ConfirmModalState.COMPLETED)
