@@ -487,7 +487,7 @@ const ControlPanel: React.FC = () => {
 
         <AutoColumn justify="flex-start">
           <Label color="textSubtle" fontSize="20px" marginTop="20px">
-            {t('Add token to CMC listings')}
+            {t('Add token to Hoenypot listings')}
           </Label>
           <Input placeholder="Input token symbol" onChange={(e) => setHoneypotSymbol(e.target.value)} />
           <Input placeholder="Input token address" onChange={(e) => setHoneypotAddress(e.target.value)} />
@@ -495,7 +495,7 @@ const ControlPanel: React.FC = () => {
         </AutoColumn>
         <StyledCenter>
           <Button variant="secondary" onClick={() => updateHoenypotList()}>
-            Add Tokens Listing
+            Add Hoenypot
           </Button>
         </StyledCenter>
       </StyledPage>
