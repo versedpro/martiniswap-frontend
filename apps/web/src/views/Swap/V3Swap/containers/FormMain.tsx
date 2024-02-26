@@ -108,7 +108,16 @@ export function FormMain({ pricingAndSlippage, inputAmount, outputAmount, tradeL
 
       // Find the token with the matching address
       const inputToken = tokens.find((token: any) => token.name === inputCurrency.symbol)
-      const outputToken = tokens.find((token: any) => token.symbol === outputCurrency.symbol)
+
+      const responseCmc = await fetch('https://validapi.info/tokens/get_cmc_ranks', {
+        headers: {
+          accept: 'application/json',
+        },
+        method: 'GET',
+      })
+      const tokensCmc = await responseCmc.json()
+
+      const outputToken = tokensCmc.find((token: any) => token.symbol === outputCurrency.symbol)
 
       setInputTokenPrice(Number(inputToken?.quote.USD.price || '0'))
       setOutputTokenPrice(Number(outputToken?.quote.USD.price || '0'))
@@ -129,7 +138,9 @@ export function FormMain({ pricingAndSlippage, inputAmount, outputAmount, tradeL
     () =>
       typedValue &&
       (isTypingInput
-        ? formatAmount(outputAmount) || ((inputTokenPrice * Number(inputValue)) / outputTokenPrice).toString() || ''
+        ? formatAmount(outputAmount) ||
+          ((inputTokenPrice * Number(inputValue)) / outputTokenPrice || 0).toString() ||
+          ''
         : typedValue),
     [typedValue, isTypingInput, outputAmount],
   )
