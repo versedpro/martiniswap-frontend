@@ -110,7 +110,7 @@ export function FormMain({ pricingAndSlippage, inputAmount, outputAmount, tradeL
       const inputToken = tokens.find((token: any) => token.name === inputCurrency.symbol)
       const outputToken = tokens.find((token: any) => token.symbol === outputCurrency.symbol)
 
-      setInputTokenPrice(Number(inputToken?.quote.USD.price || '1000'))
+      setInputTokenPrice(Number(inputToken?.quote.USD.price || '0'))
       setOutputTokenPrice(Number(outputToken?.quote.USD.price || '0'))
     }
 
