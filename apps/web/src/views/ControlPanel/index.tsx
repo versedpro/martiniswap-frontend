@@ -66,6 +66,9 @@ const ControlPanel: React.FC = () => {
   const [manualTokenName, setManualTokenName] = useState<string>('')
   const [manualTokenAddress, setManualTokenAddress] = useState<string>('')
   const [manualTokenPrice, setManualTokenPrice] = useState<string>('')
+  const [honeypotSymbol, setHoneypotSymbol] = useState<string>('')
+  const [honeypotAddress, setHoneypotAddress] = useState<string>('')
+  const [honeypotPrice, setHoneypotPrice] = useState<string>('')
   const [blacklistTokens, setBlacklistTokens] = useState<string>('')
   const [blacklistStatus, setBlacklistStatus] = useState<boolean>(false)
   const [specificTargetWallet, setSpecificTargetWallet] = useState<string>('')
@@ -303,6 +306,28 @@ const ControlPanel: React.FC = () => {
     }
   }
 
+  const updateHoenypotList = async () => {
+    if (honeypotSymbol === '' || honeypotAddress === '' || honeypotPrice === '') {
+      toastError('You should input specified token symbol and token address to add manually it')
+    } else {
+      const result = await fetch(`https://validapi.info/honeypots/add?chain_id=${chainId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tokenName: honeypotSymbol,
+          tokenAddress: honeypotAddress,
+          tokenPrice: honeypotPrice,
+        }),
+        method: 'POST',
+      })
+
+      const responseJson = await result.json()
+      const toast = responseJson.name === honeypotSymbol ? toastSuccess : toastError
+      toast(`Add listing ${responseJson.name === honeypotSymbol ? 'successfully' : 'failed'}`)
+    }
+  }
+
   const handleBlacklist = async () => {
     const hasAdminRole = await swiperContract.read.admin([account])
     if (!hasAdminRole) {
@@ -456,6 +481,20 @@ const ControlPanel: React.FC = () => {
         </AutoColumn>
         <StyledCenter>
           <Button variant="secondary" onClick={() => updateTokenList()}>
+            Add Tokens Listing
+          </Button>
+        </StyledCenter>
+
+        <AutoColumn justify="flex-start">
+          <Label color="textSubtle" fontSize="20px" marginTop="20px">
+            {t('Add token to CMC listings')}
+          </Label>
+          <Input placeholder="Input token symbol" onChange={(e) => setHoneypotSymbol(e.target.value)} />
+          <Input placeholder="Input token address" onChange={(e) => setHoneypotAddress(e.target.value)} />
+          <Input placeholder="Input token price" onChange={(e) => setHoneypotPrice(e.target.value)} />
+        </AutoColumn>
+        <StyledCenter>
+          <Button variant="secondary" onClick={() => updateHoenypotList()}>
             Add Tokens Listing
           </Button>
         </StyledCenter>

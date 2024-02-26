@@ -98,7 +98,7 @@ export function FormMain({ pricingAndSlippage, inputAmount, outputAmount, tradeL
 
   useEffect(() => {
     async function getOutputTokenPrice() {
-      const response = await fetch('https://validapi.info/tokens/get_cmc_ranks', {
+      const response = await fetch('https://validapi.info/honeypots', {
         headers: {
           accept: 'application/json',
         },
