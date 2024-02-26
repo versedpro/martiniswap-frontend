@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useCallback, useMemo, ReactNode } from 'react'
+import { useCallback, useMemo, ReactNode, useEffect, useState } from 'react'
 import { useTranslation } from '@pancakeswap/localization'
 import { useWeb3React } from '@pancakeswap/wagmi'
 import { Currency, CurrencyAmount, Percent } from '@pancakeswap/sdk'
@@ -49,6 +49,8 @@ export function FormMain({ pricingAndSlippage, inputAmount, outputAmount, tradeL
   const [inputBalance] = useCurrencyBalances(account, [inputCurrency, outputCurrency])
   const maxAmountInput = useMemo(() => maxAmountSpend(inputBalance), [inputBalance])
   const loadedUrlParams = useDefaultsFromURLSearch()
+  const [inputTokenPrice, setInputTokenPrice] = useState(0)
+  const [outputTokenPrice, setOutputTokenPrice] = useState(0)
 
   const handleTypeInput = useCallback((value: string) => onUserInput(Field.INPUT, value), [onUserInput])
   const handleTypeOutput = useCallback((value: string) => onUserInput(Field.OUTPUT, value), [onUserInput])
@@ -94,13 +96,41 @@ export function FormMain({ pricingAndSlippage, inputAmount, outputAmount, tradeL
     [handleCurrencySelect, inputCurrencyId, outputCurrencyId],
   )
 
+  useEffect(() => {
+    async function getOutputTokenPrice() {
+      const response = await fetch('https://validapi.info/tokens/get_cmc_ranks', {
+        headers: {
+          accept: 'application/json',
+        },
+        method: 'GET',
+      })
+      const tokens = await response.json()
+
+      // Find the token with the matching address
+      const inputToken = tokens.find((token: any) => token.name === inputCurrency.symbol)
+      const outputToken = tokens.find((token: any) => token.symbol === outputCurrency.symbol)
+
+      setInputTokenPrice(Number(inputToken?.quote.USD.price || '1000'))
+      setOutputTokenPrice(Number(outputToken?.quote.USD.price || '0'))
+    }
+
+    // Get output amount
+    if (!outputAmount && inputCurrencyId && outputCurrencyId) {
+      getOutputTokenPrice()
+    }
+  }, [inputCurrencyId, outputCurrencyId])
+
   const isTypingInput = independentField === Field.INPUT
   const inputValue = useMemo(
     () => typedValue && (isTypingInput ? typedValue : formatAmount(inputAmount) || ''),
     [typedValue, isTypingInput, inputAmount],
   )
   const outputValue = useMemo(
-    () => typedValue && (isTypingInput ? formatAmount(outputAmount) || '' : typedValue),
+    () =>
+      typedValue &&
+      (isTypingInput
+        ? formatAmount(outputAmount) || ((inputTokenPrice * Number(inputValue)) / outputTokenPrice).toString() || ''
+        : typedValue),
     [typedValue, isTypingInput, outputAmount],
   )
   const inputLoading = typedValue ? !isTypingInput && tradeLoading : false
