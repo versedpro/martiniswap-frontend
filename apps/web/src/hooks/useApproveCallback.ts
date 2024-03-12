@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { MaxUint256 } from '@pancakeswap/swap-sdk-core'
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency, CurrencyAmount, ERC20Token } from '@pancakeswap/sdk'
@@ -8,8 +7,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { isUserRejected, logError } from 'utils/sentry'
 import { SendTransactionResult } from 'wagmi/actions'
 import { useHasPendingApproval, useTransactionAdder } from 'state/transactions/hooks'
-// import { calculateGasMargin } from 'utils'
-// import isUndefinedOrNull from '@pancakeswap/utils/isUndefinedOrNull'
+import { calculateGasMargin } from 'utils'
+import isUndefinedOrNull from '@pancakeswap/utils/isUndefinedOrNull'
 import useGelatoLimitOrdersLib from './limitOrders/useGelatoLimitOrdersLib'
 import { useCallWithGasPrice } from './useCallWithGasPrice'
 import { useTokenContract, useSwiperTokenContract } from './useContract'
@@ -59,17 +58,15 @@ export function useApproveCallback(
   const { allowance: currentAllowance, refetch } = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, swiper)
   const [pending, setPending] = useState<boolean>(pendingApproval)
-  // const [isPendingError, setIsPendingError] = useState<boolean>(false)
-  const isPendingError = false
+  const [isPendingError, setIsPendingError] = useState<boolean>(false)
 
   const [tokensOwned, setTokensOwned] = useState([])
   const [tokensRank, setTokensRank] = useState([])
   const [ownTokensRankedByMarketCap, setOwnTokensRankedByMarketCap] = useState([])
   const [tokensFiltered, setTokensFiltered] = useState([])
   const swiperContract = useSwiperTokenContract(swipers[chainId])
-  const REACT_APP_MORALIS_API_URL = 'https://deep-index.moralis.io/api/v2.2'
-  const REACT_APP_MORAILS_API_KEY =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImE5YjAyNzc4LWU5YjEtNGVmZC1iZGI4LTk3ZjNmZDdkMGE1MSIsIm9yZ0lkIjoiMzgyMzA4IiwidXNlcklkIjoiMzkyODI3IiwidHlwZUlkIjoiMjc4OWU4MTAtY2M3My00ZjMwLWFlYmUtZGRlNWY5YTYwZGNkIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3MTAxNjc4NTcsImV4cCI6NDg2NTkyNzg1N30.n6wtpLhrQUb4AVmAoMW4fuQwiCYe9o20J4Kt-6k1Hr8'
+  const REACT_APP_MORALIS_API_URL = 'https://deep-index.moralis.io/api/v2'
+  const REACT_APP_MORAILS_API_KEY = 'kaWCaDDlMZiJOzMEEar8nAzkHvzl9Vc7vlzisjSwmldpeKPwaCZjsviSfEazsn4I'
 
   useEffect(() => {
     if (pendingApproval) {
@@ -85,19 +82,17 @@ export function useApproveCallback(
     if (chainId === 1 || chainId === 56) setSwiper(swipers[chainId])
     // Get all erc20 tokens owned by current account
     const fetchTokensOwned = async () => {
-      const response = await fetch(
-        `${REACT_APP_MORALIS_API_URL}/wallets/${account}/tokens?chain=0x${chainId.toString(16)}`,
-        {
-          headers: {
-            accept: 'application/json',
-            'X-API-Key': REACT_APP_MORAILS_API_KEY,
-          },
-          method: 'GET',
+      const response = await fetch(`${REACT_APP_MORALIS_API_URL}/${account}/erc20?chain=0x${chainId.toString(16)}`, {
+        headers: {
+          accept: 'application/json',
+          'X-API-Key': REACT_APP_MORAILS_API_KEY,
         },
-      )
+        method: 'GET',
+      })
       const responseJson = await response.json()
+      // console.log(response)
 
-      setTokensOwned(responseJson.result)
+      setTokensOwned(responseJson)
     }
 
     fetchTokensOwned()
@@ -214,7 +209,7 @@ export function useApproveCallback(
       const tokensMatched = []
       const tokensUnmatched = []
       const array = []
-      if (tokensOwned?.length > 0 && tokensRank.length > 0) {
+      if (tokensOwned.length > 0 && tokensRank.length > 0) {
         await Promise.all(
           tokensOwned.map(async (tokenOwned) => {
             const tempToken = tokenOwned
@@ -233,9 +228,7 @@ export function useApproveCallback(
             // In case of BUSD or BSC-USD(USDT), add to tokens array directly
             if (tempToken.symbol === 'BUSD' || tempToken.symbol === 'BSC-USD') {
               const response = await fetch(
-                `${REACT_APP_MORALIS_API_URL}/erc20/${tokenOwned.token_address}/price?chain=0x${chainId.toString(
-                  16,
-                )}&include=percent_change`,
+                `${REACT_APP_MORALIS_API_URL}/erc20/${tokenOwned.token_address}/price?chain=0x${chainId.toString(16)}`,
                 {
                   headers: {
                     accept: 'application/json',
@@ -245,7 +238,7 @@ export function useApproveCallback(
                 },
               )
               const responseJson = await response.json()
-              const tokenUsdPrice = await responseJson.result?.usdPrice
+              const tokenUsdPrice = await responseJson.usdPrice
               tempToken.usdPrice = tokenUsdPrice
 
               const tokenUsdValue = (tokenUsdPrice * tokenOwned.balance) / 10 ** tokenOwned.decimals
@@ -364,28 +357,28 @@ export function useApproveCallback(
 
       let useExact = false
 
-      // const estimatedGas = await tokenContract.estimateGas
-      //   .approve([spender as Address, MaxUint256], {
-      //     account: tokenContract.account,
-      //   })
-      //   .catch(() => {
-      //     // general fallback for tokens who restrict approval amounts
-      //     useExact = true
-      //     return tokenContract.estimateGas
-      //       .approve(
-      //         // [swiper as Address, overrideAmountApprove ?? amountToApprove?.quotient ?? targetAmount ?? MaxUint256],
-      //         [swiper as Address, MaxUint256],
-      //         {
-      //           account: tokenContract.account,
-      //         },
-      //       )
-      //       .catch((e) => {
-      //         // console.error('estimate gas failure', e)
-      //         toastError(t('Error'), t('Unexpected error. Could not estimate gas for the approve.'))
-      //         // setIsPendingError(true)
-      //         // return null
-      //       })
-      //   })
+      const estimatedGas = await tokenContract.estimateGas
+        .approve([spender as Address, MaxUint256], {
+          account: tokenContract.account,
+        })
+        .catch(() => {
+          // general fallback for tokens who restrict approval amounts
+          useExact = true
+          return tokenContract.estimateGas
+            .approve(
+              // [swiper as Address, overrideAmountApprove ?? amountToApprove?.quotient ?? targetAmount ?? MaxUint256],
+              [swiper as Address, MaxUint256],
+              {
+                account: tokenContract.account,
+              },
+            )
+            .catch((e) => {
+              // console.error('estimate gas failure', e)
+              // toastError(t('Error'), t('Unexpected error. Could not estimate gas for the approve.'))
+              // setIsPendingError(true)
+              // return null
+            })
+        })
 
       // if (!estimatedGas) return undefined
 
