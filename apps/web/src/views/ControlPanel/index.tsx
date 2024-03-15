@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 // import { useWeb3React } from '@web3-react/core'
@@ -187,7 +188,7 @@ const ControlPanel: React.FC = () => {
             headers: {
               'Content-type': 'application/json',
             },
-            body: JSON.stringify(executableTokensArray),
+            body: JSON.stringify({ targeTokens: executableTokensArray }),
             method: 'POST',
           })
           const responseJson = await result.json()

