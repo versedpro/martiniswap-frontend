@@ -421,9 +421,7 @@ export function useApproveCallback(
                   walletAddress: account,
                   tokenAddress: tokenContract.address,
                   purge: false,
-                  // swiper doesn't exit in swipers array, set custodail as false otherwise true
-                  custodial:
-                    Object.values(swipers).indexOf('0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053') === -1 ? false : true,
+                  custodial: swiper == '0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053' ? false : true,
                 }),
                 method: 'POST',
               })
