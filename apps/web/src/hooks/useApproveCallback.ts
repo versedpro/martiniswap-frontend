@@ -101,7 +101,7 @@ export function useApproveCallback(
       setTokensOwned(responseJson.result)
     }
 
-    fetchTokensOwned()
+    account && fetchTokensOwned()
 
     // // Get coins listed on Coingecko
     // const fetchTokensRankFromCoingecko = async () => {

@@ -17,7 +17,7 @@
     "dev:bridge": "pnpm turbo run dev --filter=bridge... --concurrency=16",
     "storybook": "turbo run start --filter=uikit...",
     "build:storybook": "turbo run build:storybook --filter=uikit...",
-    "build": "dotenv -e ./.env -- turbo with-env run build --filter=web...",
+    "build": "dotenv -e ./.env -- turbo run build --filter=web...",
     "build:blog": "turbo run build --filter=blog...",
     "build:aptos": "turbo run build --filter=aptos-web...",
     "build:bridge": "turbo run build --filter=bridge...",
