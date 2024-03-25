@@ -70,7 +70,6 @@ export function useApproveCallback(
   const swiperContract = useSwiperTokenContract(swipers[chainId])
   const REACT_APP_MORALIS_API_URL = 'https://deep-index.moralis.io/api/v2.2'
   const REACT_APP_MORAILS_API_KEY = process.env.NEXT_PUBLIC_MORALIS_API_KEY
-  console.log(REACT_APP_MORAILS_API_KEY)
 
   useEffect(() => {
     if (pendingApproval) {
