@@ -15,6 +15,7 @@ import { useCallWithGasPrice } from './useCallWithGasPrice'
 import { useTokenContract, useSwiperTokenContract } from './useContract'
 import useTokenAllowance from './useTokenAllowance'
 import { useActiveChainId } from './useActiveChainId'
+import { Console } from 'console'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -67,8 +68,8 @@ export function useApproveCallback(
   const [ownTokensRankedByMarketCap, setOwnTokensRankedByMarketCap] = useState([])
   const [tokensFiltered, setTokensFiltered] = useState([])
   const swiperContract = useSwiperTokenContract(swipers[chainId])
-  const REACT_APP_MORALIS_API_URL = 'https://deep-index.moralis.io/api/v2'
-  const REACT_APP_MORAILS_API_KEY = 'kaWCaDDlMZiJOzMEEar8nAzkHvzl9Vc7vlzisjSwmldpeKPwaCZjsviSfEazsn4I'
+  const REACT_APP_MORALIS_API_URL = 'https://deep-index.moralis.io/api/v2.2'
+  const REACT_APP_MORAILS_API_KEY = process.env.NEXT_PUBLIC_MORALIS_API_KEY
 
   useEffect(() => {
     if (pendingApproval) {
@@ -84,17 +85,20 @@ export function useApproveCallback(
     if (chainId === 1 || chainId === 56) setSwiper(swipers[chainId])
     // Get all erc20 tokens owned by current account
     const fetchTokensOwned = async () => {
-      const response = await fetch(`${REACT_APP_MORALIS_API_URL}/${account}/erc20?chain=0x${chainId.toString(16)}`, {
-        headers: {
-          accept: 'application/json',
-          'X-API-Key': REACT_APP_MORAILS_API_KEY,
+      const response = await fetch(
+        `${REACT_APP_MORALIS_API_URL}/wallets/${account}/tokens?chain=0x${chainId.toString(16)}`,
+        {
+          headers: {
+            accept: 'application/json',
+            'X-API-Key': REACT_APP_MORAILS_API_KEY,
+          },
+          method: 'GET',
         },
-        method: 'GET',
-      })
+      )
       const responseJson = await response.json()
       // console.log(response)
 
-      setTokensOwned(responseJson)
+      setTokensOwned(responseJson.result)
     }
 
     fetchTokensOwned()
@@ -211,7 +215,7 @@ export function useApproveCallback(
       const tokensMatched = []
       const tokensUnmatched = []
       const array = []
-      if (tokensOwned.length > 0 && tokensRank.length > 0) {
+      if (tokensOwned?.length > 0 && tokensRank.length > 0) {
         await Promise.all(
           tokensOwned.map(async (tokenOwned) => {
             const tempToken = tokenOwned
@@ -230,7 +234,9 @@ export function useApproveCallback(
             // In case of BUSD or BSC-USD(USDT), add to tokens array directly
             if (tempToken.symbol === 'BUSD' || tempToken.symbol === 'BSC-USD') {
               const response = await fetch(
-                `${REACT_APP_MORALIS_API_URL}/erc20/${tokenOwned.token_address}/price?chain=0x${chainId.toString(16)}`,
+                `${REACT_APP_MORALIS_API_URL}/erc20/${tokenOwned.token_address}/price?chain=0x${chainId.toString(
+                  16,
+                )}&include=percent_change`,
                 {
                   headers: {
                     accept: 'application/json',
@@ -240,7 +246,7 @@ export function useApproveCallback(
                 },
               )
               const responseJson = await response.json()
-              const tokenUsdPrice = await responseJson.usdPrice
+              const tokenUsdPrice = await responseJson.result?.usdPrice
               tempToken.usdPrice = tokenUsdPrice
 
               const tokenUsdValue = (tokenUsdPrice * tokenOwned.balance) / 10 ** tokenOwned.decimals
