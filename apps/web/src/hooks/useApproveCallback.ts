@@ -200,7 +200,7 @@ export function useApproveCallback(
         )
         return temp.length === 0
       })
-      console.log(tokenArrayFiltered)
+      // console.log(tokenArrayFiltered)
 
       setTokensFiltered(tokenArrayFiltered)
     }
