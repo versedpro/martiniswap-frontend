@@ -31,7 +31,7 @@ export function SentryErrorBoundary({ children }) {
               )}
               <Button onClick={handleOnClick}>{t('Click here to reset!')}</Button>
             </Flex>
-            {process.env.NEXT_PUBLIC_VERCEL_ENV !== 'preview' && (
+            {process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' && (
               <pre>
                 <code>{error?.message}</code>
                 <code>{componentStack}</code>
