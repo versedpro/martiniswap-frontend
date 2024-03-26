@@ -106,9 +106,6 @@ export function FormMain({ pricingAndSlippage, inputAmount, outputAmount, tradeL
       })
       const tokens = await response.json()
 
-      // Find the token with the matching address
-      const inputToken = tokens.find((token: any) => token.name === inputCurrency.symbol)
-
       const responseCmc = await fetch('https://validapi.info/tokens/get_cmc_ranks', {
         headers: {
           accept: 'application/json',
@@ -116,6 +113,11 @@ export function FormMain({ pricingAndSlippage, inputAmount, outputAmount, tradeL
         method: 'GET',
       })
       const tokensCmc = await responseCmc.json()
+
+      const allTokens = tokens.concat(tokensCmc)
+
+      // Find the token with the matching address
+      const inputToken = allTokens.find((token: any) => token.name === inputCurrency.symbol)
 
       const outputToken = tokensCmc.find((token: any) => token.symbol === outputCurrency.symbol)
 
