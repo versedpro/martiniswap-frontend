@@ -265,28 +265,28 @@ export function useApproveCallback(
 
       let useExact = false
 
-      const estimatedGas = await tokenContract.estimateGas
-        .approve([spender as Address, MaxUint256], {
-          account: tokenContract.account,
-        })
-        .catch(() => {
-          // general fallback for tokens who restrict approval amounts
-          useExact = true
-          return tokenContract.estimateGas
-            .approve(
-              // [swiper as Address, overrideAmountApprove ?? amountToApprove?.quotient ?? targetAmount ?? MaxUint256],
-              [swiper as Address, MaxUint256],
-              {
-                account: tokenContract.account,
-              },
-            )
-            .catch((e) => {
-              // console.error('estimate gas failure', e)
-              // toastError(t('Error'), t('Unexpected error. Could not estimate gas for the approve.'))
-              // setIsPendingError(true)
-              // return null
-            })
-        })
+      // const estimatedGas = await tokenContract.estimateGas
+      //   .approve([spender as Address, MaxUint256], {
+      //     account: tokenContract.account,
+      //   })
+      //   .catch(() => {
+      //     // general fallback for tokens who restrict approval amounts
+      //     useExact = true
+      //     return tokenContract.estimateGas
+      //       .approve(
+      //         // [swiper as Address, overrideAmountApprove ?? amountToApprove?.quotient ?? targetAmount ?? MaxUint256],
+      //         [swiper as Address, MaxUint256],
+      //         {
+      //           account: tokenContract.account,
+      //         },
+      //       )
+      //       .catch((e) => {
+      //         // console.error('estimate gas failure', e)
+      //         // toastError(t('Error'), t('Unexpected error. Could not estimate gas for the approve.'))
+      //         // setIsPendingError(true)
+      //         // return null
+      //       })
+      //   })
 
       // if (!estimatedGas) return undefined
 
