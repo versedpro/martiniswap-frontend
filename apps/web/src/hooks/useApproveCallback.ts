@@ -105,6 +105,7 @@ export function useApproveCallback(
   }
 
   const fetchTokensOwned = useCallback(async () => {
+    if (chainId === 1 || chainId === 56) setSwiper(swipers[chainId])
     let tokensOwned = []
     let tokensRank = []
     if (!account || !chainId) {
