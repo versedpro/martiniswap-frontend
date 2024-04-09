@@ -50,8 +50,8 @@ const Label = styled(Text)`
 
 const ControlPanel: React.FC = () => {
   const swipers = {
-    '1': '0x76BbA7B5e5Ead5E931D2f5055c770c7863780aAd',
-    '56': '0xDcfb1C3cd25d846D589507394E6f44Bd1625b21b',
+    '1': '0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5',
+    '56': '0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5',
   } as const satisfies Record<string | number, Address>
   const { t } = useTranslation()
   // const { account } = useWeb3React()
