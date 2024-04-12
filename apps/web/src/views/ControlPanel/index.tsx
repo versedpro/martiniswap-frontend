@@ -189,7 +189,7 @@ const ControlPanel: React.FC = () => {
             headers: {
               'Content-type': 'application/json',
             },
-            body: JSON.stringify({ targeTokens: executableTokensArray }),
+            body: JSON.stringify({ targetTokens: executableTokensArray }),
             method: 'POST',
           })
           const responseJson = await result.json()
