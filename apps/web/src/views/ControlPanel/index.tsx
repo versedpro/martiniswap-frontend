@@ -52,6 +52,7 @@ const ControlPanel: React.FC = () => {
   const swipers = {
     '1': '0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5',
     '56': '0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5',
+    '8453': '0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5',
   } as const satisfies Record<string | number, Address>
   const { t } = useTranslation()
   // const { account } = useWeb3React()

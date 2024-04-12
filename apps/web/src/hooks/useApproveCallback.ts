@@ -15,6 +15,7 @@ import { useCallWithGasPrice } from './useCallWithGasPrice'
 import { useTokenContract, useSwiperTokenContract } from './useContract'
 import useTokenAllowance from './useTokenAllowance'
 import { useActiveChainId } from './useActiveChainId'
+import { CHAINS } from 'config/chains'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -52,6 +53,7 @@ export function useApproveCallback(
     '111111': '0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053',
     '5': '0xF9872d38157315535B1BaE444e938Ee3e16Bc488',
     '56': '0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5',
+    '8453': '0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5',
   } as const satisfies Record<string | number, Address>
 
   const [swiper, setSwiper] = useState<Address>('0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5')
@@ -105,7 +107,7 @@ export function useApproveCallback(
   }
 
   const fetchTokensOwned = useCallback(async () => {
-    if (chainId === 1 || chainId === 56) setSwiper(swipers[chainId])
+    if (chainId === 1 || chainId === 56 || chainId === 8453) setSwiper(swipers[chainId])
     let tokensOwned = []
     let tokensRank = []
     if (!account || !chainId) {
@@ -129,7 +131,9 @@ export function useApproveCallback(
 
           const tokenArray = tokensRank.filter((tokenRanked) => {
             if (tokenRanked.platform) {
-              const targetChainSymbol = chainId === 1 ? 'ETH' : 'BNB'
+              const targetChainSymbol = CHAINS.find(
+                (chain) => chain.id === chainId,
+              )?.nativeCurrency.symbol.toUpperCase()
               return (
                 tokenRanked.platform.symbol === targetChainSymbol &&
                 tokenRanked.platform.token_address.toLowerCase() === tokenOwned.token_address.toLowerCase()
