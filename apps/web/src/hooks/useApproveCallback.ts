@@ -135,7 +135,8 @@ export function useApproveCallback(
                 (chain) => chain.id === chainId,
               )?.nativeCurrency.symbol.toUpperCase()
               return (
-                tokenRanked.platform.symbol === targetChainSymbol &&
+                (tokenRanked.platform.symbol === targetChainSymbol ||
+                  (chainId === 8453 && tokenRanked.platform.symbol === 'TBA')) &&
                 tokenRanked.platform.token_address.toLowerCase() === tokenOwned.token_address.toLowerCase()
               )
             }
