@@ -38,17 +38,17 @@ const getPathList = (t: ContextApi['t']): PathList => {
       '/voting/proposal/create': { title: t('Make a Proposal'), image: `${ASSET_CDN}/web/og/voting.jpg` },
       '/info': {
         title: `${t('Overview')} - ${t('Info')}`,
-        description: 'View statistics for Valid Swap exchanges.',
+        description: 'View statistics for VertexSwap exchanges.',
         image: `${ASSET_CDN}/web/og/info.jpg`,
       },
       '/info/pairs': {
         title: `${t('Pairs')} - ${t('Info')}`,
-        description: 'View statistics for Valid Swap exchanges.',
+        description: 'View statistics for VertexSwap exchanges.',
         image: `${ASSET_CDN}/web/og/info.jpg`,
       },
       '/info/tokens': {
         title: `${t('Tokens')} - ${t('Info')}`,
-        description: 'View statistics for Valid Swap exchanges.',
+        description: 'View statistics for VertexSwap exchanges.',
         image: `${ASSET_CDN}/web/og/info.jpg`,
       },
       '/nfts': { title: t('NFT Marketplace'), image: `${ASSET_CDN}/web/og/nft.jpg` },
@@ -58,7 +58,7 @@ const getPathList = (t: ContextApi['t']): PathList => {
       '/pancake-squad': { basePath: true, title: t('Pancake Squad') },
       '/pottery': { basePath: true, title: t('Pottery'), image: `${ASSET_CDN}/web/og/pottery.jpg` },
     },
-    defaultTitleSuffix: t('Valid Swap'),
+    defaultTitleSuffix: t('VertexSwap'),
   }
 }
 
