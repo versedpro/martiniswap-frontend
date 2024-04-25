@@ -26,7 +26,7 @@ const Page: React.FC<
   // const externalLinkUrl = isBSC ? 'https://t.me/ValidSwapSupport' : ''
 
   const externalText = t('Support')
-  const externalLinkUrl = 'https://t.me/ValidSwapSupport'
+  const externalLinkUrl = 'https://t.me/VortexSwapSupport'
 
   return (
     <Swap.Page

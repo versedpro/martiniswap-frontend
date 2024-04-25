@@ -1,8 +1,8 @@
 {
-  "short_name": "Valid Swap",
-  "name": "Valid Swap",
+  "short_name": "VortexSwap",
+  "name": "VortexSwap",
   "description": "Swap tokens on multiple chains",
-  "homepage_url": "https://www.valid-swap.io/",
+  "homepage_url": "https://www.vortexswap.finance/",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#1FC7D4",

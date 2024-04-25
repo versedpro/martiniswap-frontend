@@ -11,7 +11,7 @@ const LinkExternal: React.FC<React.PropsWithChildren<LinkProps>> = ({
   return (
     <Link external {...props}>
       {children}
-      {showExternalIcon && <TelegramIcon color={props.color ? props.color : "secondary"} ml="4px" />}
+      {showExternalIcon && <TelegramIcon color={props.color ? props.color : "primary"} ml="4px" />}
     </Link>
   );
 };
