@@ -1,8 +1,8 @@
 {
-  "short_name": "VortexSwap",
-  "name": "VortexSwap",
+  "short_name": "MartiniSwap",
+  "name": "MartiniSwap",
   "description": "Swap tokens on multiple chains",
-  "homepage_url": "https://www.vortexswap.finance/",
+  "homepage_url": "https://www.martiniswap.io/",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#1FC7D4",

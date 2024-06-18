@@ -50,7 +50,7 @@ const Logo: React.FC<React.PropsWithChildren<Props>> = ({ href }) => {
       {/* <LogoIcon className="mobile-icon" /> */}
       {/* <LogoWithTextIcon className="desktop-icon" /> */}
       <Image src="/logo.png" alt="" width={32} height={18} className="mobile-icon" />
-      <Image src="/full_logo.png" alt="" width={160} height={26} className="desktop-icon" />
+      <Image src="/full_logo.svg" alt="" width={160} height={32} className="desktop-icon" />
     </>
   );
 

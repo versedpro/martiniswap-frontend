@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo } from 'react'
 import { Currency, CurrencyAmount, Token, TradeType } from '@pancakeswap/sdk'
 import { ChainId } from '@pancakeswap/chains'
 
-import { Box, BscScanIcon, Flex, InjectedModalProps, Link, Image, AutoColumn } from '@pancakeswap/uikit'
+import { Box, BscScanIcon, Flex, InjectedModalProps, Link } from '@pancakeswap/uikit'
 import {
   ApproveModalContent,
   SwapPendingModalContent,
@@ -244,15 +244,7 @@ export const ConfirmSwapModal = memo<InjectedModalProps & ConfirmSwapModalProps>
       bodyTop={isShowingLoadingAnimation ? '-15px' : '0'}
       handleDismiss={handleDismiss}
     >
-      <Box>
-        {!isShowingLoadingAnimation ? (
-          topModal
-        ) : (
-          <AutoColumn justify="center">
-            <Image src="./waiting.gif" alt="" width={300} height={300} />
-          </AutoColumn>
-        )}
-      </Box>
+      <Box>{topModal}</Box>
       {isShowingLoadingAnimation && !swapErrorMessage && (
         <ApproveStepFlow confirmModalState={confirmModalState} pendingModalSteps={pendingModalSteps} />
       )}

@@ -193,8 +193,8 @@ export const L2_CHAIN_IDS: ChainId[] = [
 
 export const CHAINS = [
   bsc,
-  mainnet,
-  // bscTestnet,
+  // mainnet,
+  bscTestnet,
   // goerli,
   // polygonZkEvm,
   // polygonZkEvmTestnet,
@@ -206,7 +206,7 @@ export const CHAINS = [
   // lineaTestnet,
   // arbitrumGoerli,
   // arbitrum,
-  base,
+  // base,
   // baseGoerli,
   // opbnb,
   // opbnbTestnet,

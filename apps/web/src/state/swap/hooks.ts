@@ -263,7 +263,8 @@ export function useDefaultsFromURLSearch():
     const parsed = queryParametersToSwapState(
       query,
       native.symbol,
-      CAKE[chainId]?.address ?? STABLE_COIN[chainId]?.address ?? USDC[chainId]?.address ?? USDT[chainId]?.address,
+      // CAKE[chainId]?.address ?? STABLE_COIN[chainId]?.address ?? USDC[chainId]?.address ?? USDT[chainId]?.address,
+      STABLE_COIN[chainId]?.address ?? USDC[chainId]?.address ?? USDT[chainId]?.address,
     )
 
     dispatch(
@@ -271,7 +272,7 @@ export function useDefaultsFromURLSearch():
         typedValue: parsed.typedValue,
         field: parsed.independentField,
         inputCurrencyId: parsed[Field.INPUT].currencyId,
-        // outputCurrencyId: parsed[Field.OUTPUT].currencyId,
+        outputCurrencyId: parsed[Field.OUTPUT].currencyId,
         recipient: null,
       }),
     )

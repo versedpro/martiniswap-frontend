@@ -193,7 +193,6 @@ export const SwapCommitButton = memo(function SwapCommitButton({
       approvalState === ApprovalState.PENDING ||
       (approvalSubmitted && approvalState === ApprovalState.APPROVED)) &&
     !(priceImpactSeverity > 3 && !isExpertMode)
-  // const showApproveFlow = true
 
   // Modals
   const [indirectlyOpenConfirmModalState, setIndirectlyOpenConfirmModalState] = useState(false)
@@ -254,7 +253,7 @@ export const SwapCommitButton = memo(function SwapCommitButton({
       startSwapFlow()
     }
     onPresentConfirmModal()
-    // logGTMClickSwapEvent()
+    logGTMClickSwapEvent()
   }, [trade, onPresentConfirmModal, isExpertMode, startSwapFlow, resetSwapFlow])
 
   // useEffect
@@ -307,37 +306,37 @@ export const SwapCommitButton = memo(function SwapCommitButton({
     inputCurrency && outputCurrency && parsedIndepentFieldAmount?.greaterThan(BIG_INT_ZERO),
   )
 
-  // if (noRoute && userHasSpecifiedInputOutput && !tradeLoading) {
-  //   return (
-  //     <AutoColumn gap="12px">
-  //       <GreyCard style={{ textAlign: 'center', padding: '0.75rem' }}>
-  //         <Text color="textSubtle">{t('Insufficient liquidity for this trade.')}</Text>
-  //       </GreyCard>
-  //       {isRoutingSettingChange && (
-  //         <Message variant="warning" icon={<></>}>
-  //           <AutoColumn gap="8px">
-  //             <MessageText>{t('Unable to establish trading route due to customized routing.')}</MessageText>
-  //             <AutoRow gap="4px">
-  //               <RoutingSettingsButton
-  //                 buttonProps={{
-  //                   scale: 'xs',
-  //                   p: 0,
-  //                 }}
-  //                 showRedDot={false}
-  //               >
-  //                 {t('Check your settings')}
-  //               </RoutingSettingsButton>
-  //               <MessageText>{t('or')}</MessageText>
-  //               <Button variant="text" scale="xs" p="0" onClick={resetRoutingSetting}>
-  //                 {t('Reset to default')}
-  //               </Button>
-  //             </AutoRow>
-  //           </AutoColumn>
-  //         </Message>
-  //       )}
-  //     </AutoColumn>
-  //   )
-  // }
+  if (noRoute && userHasSpecifiedInputOutput && !tradeLoading) {
+    return (
+      <AutoColumn gap="12px">
+        <GreyCard style={{ textAlign: 'center', padding: '0.75rem' }}>
+          <Text color="textSubtle">{t('Insufficient liquidity for this trade.')}</Text>
+        </GreyCard>
+        {isRoutingSettingChange && (
+          <Message variant="warning" icon={<></>}>
+            <AutoColumn gap="8px">
+              <MessageText>{t('Unable to establish trading route due to customized routing.')}</MessageText>
+              <AutoRow gap="4px">
+                <RoutingSettingsButton
+                  buttonProps={{
+                    scale: 'xs',
+                    p: 0,
+                  }}
+                  showRedDot={false}
+                >
+                  {t('Check your settings')}
+                </RoutingSettingsButton>
+                <MessageText>{t('or')}</MessageText>
+                <Button variant="text" scale="xs" p="0" onClick={resetRoutingSetting}>
+                  {t('Reset to default')}
+                </Button>
+              </AutoRow>
+            </AutoColumn>
+          </Message>
+        )}
+      </AutoColumn>
+    )
+  }
 
   const isValid = !swapInputError && !tradeLoading
 
@@ -347,20 +346,18 @@ export const SwapCommitButton = memo(function SwapCommitButton({
         id="swap-button"
         width="100%"
         variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
-        // disabled={
-        //   !isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError || statusWallchain === 'pending'
-        // }
-        disabled={!isValid || statusWallchain === 'pending'}
+        disabled={
+          !isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError || statusWallchain === 'pending'
+        }
         onClick={onSwapHandler}
       >
-        {/* {swapInputError ||
+        {swapInputError ||
           (tradeLoading && <Dots>{t('Searching For The Best Price')}</Dots>) ||
           (priceImpactSeverity > 3 && !isExpertMode
             ? t('Price Impact Too High')
             : priceImpactSeverity > 2
             ? t('Swap Anyway')
-            : t('Swap'))} */}
-        {t('Swap')}
+            : t('Swap'))}
       </CommitButton>
     </Box>
   )

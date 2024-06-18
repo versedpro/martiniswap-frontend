@@ -69,7 +69,7 @@ export type InputVariants = RecipeVariants<typeof inputVariants>;
 export const inputContainerVariants = recipe({
   base: style([
     atoms({
-      borderRadius: "0",
+      borderRadius: "default",
       backgroundColor: "input",
     }),
     style({
@@ -109,7 +109,7 @@ export const pageVariants = recipe({
       alignItems: "center",
       width: "100%",
       height: "extra",
-      background: "gradsecondary",
+      background: "gradientBubblegum",
       padding: "16px",
       // paddingBottom: "0px",
     }),

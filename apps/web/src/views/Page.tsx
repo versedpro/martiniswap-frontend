@@ -22,11 +22,6 @@ const Page: React.FC<
   const { t } = useTranslation()
   // const { chainId } = useActiveChainId()
   // const isBSC = chainId === ChainId.BSC
-  // const externalText = isBSC ? t('Support') : ''
-  // const externalLinkUrl = isBSC ? 'https://t.me/ValidSwapSupport' : ''
-
-  const externalText = t('Support')
-  const externalLinkUrl = 'https://t.me/VortexSwapSupport'
 
   return (
     <Swap.Page
@@ -34,8 +29,6 @@ const Page: React.FC<
       noMinHeight={noMinHeight}
       hideFooterOnDesktop={hideFooterOnDesktop}
       helpUrl={helpUrl}
-      externalText={externalText}
-      externalLinkUrl={externalLinkUrl}
       {...props}
     >
       {children}

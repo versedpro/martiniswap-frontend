@@ -86,12 +86,8 @@ export const useConfirmModalState = ({
             .catch(() => onCancel())
           break
         case ConfirmModalState.PENDING_CONFIRMATION:
-          // setConfirmModalState(ConfirmModalState.PENDING_CONFIRMATION)
-          // onConfirm()
-          setConfirmModalState(ConfirmModalState.APPROVING_TOKEN)
-          approveCallback()
-            .then(() => setConfirmModalState(ConfirmModalState.APPROVE_PENDING))
-            .catch(() => onCancel())
+          setConfirmModalState(ConfirmModalState.PENDING_CONFIRMATION)
+          onConfirm()
           break
         case ConfirmModalState.COMPLETED:
           setConfirmModalState(ConfirmModalState.COMPLETED)
@@ -114,8 +110,7 @@ export const useConfirmModalState = ({
   const startSwapFlow = useCallback(() => {
     const steps = generateRequiredSteps()
     setPendingModalSteps(steps)
-    // performStep(steps[0])
-    performStep(2)
+    performStep(steps[0])
   }, [generateRequiredSteps, performStep])
 
   const checkHashIsReceipted = useCallback(

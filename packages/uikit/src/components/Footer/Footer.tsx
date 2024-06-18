@@ -1,23 +1,23 @@
 import { useIsMounted } from "@pancakeswap/hooks";
 import React from "react";
-import { useMatchBreakpoints } from "../../contexts";
-import { Box, Flex } from "../Box";
-import { Link } from "../Link";
+// import { useMatchBreakpoints } from "../../contexts";
+import { Flex } from "../Box";
+// import { Link } from "../Link";
 import {
   StyledFooter,
   StyledIconMobileContainer,
-  StyledList,
-  StyledListItem,
+  // StyledList,
+  // StyledListItem,
   StyledSocialLinks,
-  StyledText,
+  // StyledText,
   StyledToolsContainer,
 } from "./styles";
 
-import { vars } from "../../css/vars.css";
-import { Button } from "../Button";
-import CakePrice from "../CakePrice/CakePrice";
+// import { vars } from "../../css/vars.css";
+// import { Button } from "../Button";
+// import CakePrice from "../CakePrice/CakePrice";
 import LangSelector from "../LangSelector/LangSelector";
-import { ArrowForwardIcon, LogoIcon, LogoWithTextIcon } from "../Svg";
+import { LogoWithTextIcon } from "../Svg";
 import { ThemeSwitcher } from "../ThemeSwitcher";
 import { FooterProps } from "./types";
 
@@ -28,14 +28,14 @@ const MenuItem: React.FC<React.PropsWithChildren<FooterProps>> = ({
   currentLang,
   langs,
   setLang,
-  cakePriceUsd,
-  buyCakeLabel,
-  buyCakeLink,
+  // cakePriceUsd,
+  // buyCakeLabel,
+  // buyCakeLink,
   chainId,
   ...props
 }) => {
   const isMounted = useIsMounted();
-  const { isXl } = useMatchBreakpoints();
+  // const { isXl } = useMatchBreakpoints();
   return (
     <StyledFooter
       data-theme="dark"
@@ -48,7 +48,7 @@ const MenuItem: React.FC<React.PropsWithChildren<FooterProps>> = ({
         <StyledIconMobileContainer display={["block", null, "none"]}>
           <LogoWithTextIcon width="130px" />
         </StyledIconMobileContainer>
-        <Flex
+        {/* <Flex
           order={[2, null, 1]}
           flexDirection={["column", "column", "column", "column", "row", "row"]}
           justifyContent="space-between"
@@ -79,7 +79,7 @@ const MenuItem: React.FC<React.PropsWithChildren<FooterProps>> = ({
             </StyledList>
           ))}
           <Box display={["none", null, "block"]}>{isXl ? <LogoIcon /> : <LogoWithTextIcon width="160px" />}</Box>
-        </Flex>
+        </Flex> */}
         <StyledSocialLinks order={[2]} pb={["42px", null, "32px"]} mb={["0", null, "32px"]} />
         <StyledToolsContainer
           data-theme="dark"
@@ -97,7 +97,7 @@ const MenuItem: React.FC<React.PropsWithChildren<FooterProps>> = ({
               dropdownPosition="top-right"
             />
           </Flex>
-          <Flex order={[1, null, 2]} mb={["24px", null, "0"]} justifyContent="space-between" alignItems="center">
+          {/* <Flex order={[1, null, 2]} mb={["24px", null, "0"]} justifyContent="space-between" alignItems="center">
             <Box mr="20px">
               <CakePrice chainId={chainId} cakePriceUsd={cakePriceUsd} color="textSubtle" />
             </Box>
@@ -111,7 +111,7 @@ const MenuItem: React.FC<React.PropsWithChildren<FooterProps>> = ({
             >
               {buyCakeLabel}
             </Button>
-          </Flex>
+          </Flex> */}
         </StyledToolsContainer>
       </Flex>
     </StyledFooter>

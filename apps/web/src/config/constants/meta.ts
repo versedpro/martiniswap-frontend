@@ -4,8 +4,8 @@ import { PageMeta } from './types'
 import { ASSET_CDN } from './endpoints'
 
 export const DEFAULT_META: PageMeta = {
-  title: 'PancakeSwap',
-  description: 'The most popular AMM on BSC/ETH by user count.',
+  title: 'MartiniSwap',
+  description: 'The most popular AMM on BSC by user count.',
   image: `${ASSET_CDN}/web/og/hero.jpg`,
 }
 

@@ -11,10 +11,6 @@ const StyledPage = styled(Container)`
   padding-top: 16px;
   padding-bottom: 16px;
 
-  background-image: url('/images/planet-pluto.png');
-  background-repeat: no-repeat;
-  background-position: bottom center;
-
   ${({ theme }) => theme.mediaQueries.sm} {
     padding-top: 24px;
     padding-bottom: 24px;
